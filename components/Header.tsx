@@ -1,14 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import openseaLogo from "../assets/opensea.png";
+import logosvg from "../assets/logo.svg";
 import { AiOutlineSearch } from "react-icons/ai";
 import { CgProfile } from "react-icons/cg";
 import { MdOutlineAccountBalanceWallet } from "react-icons/md";
 
 const style = {
-  wrapper: `bg-[#04111d] w-screen px-[4rem] py-[0.8rem] flex flex-col  items-center gap-y-5 lg:flex-row`,
-  logoContainer: `flex items-center cursor-pointer`,
+  wrapper: `bg-[#04111d] w-[100%] px-[3rem] py-[0.8rem] flex flex-col  items-center gap-y-5 lg:flex-row`,
+  logoContainer: `flex items-center cursor-pointer mr-4`,
   logoText: ` ml-[0.8rem] text-white font-semibold text-2xl`,
   searchBar: `flex flex-1 mx-[0.8rem] w-max-[520px] items-center bg-[#363840] rounded-[0.8rem] hover:bg-[#4c505c]`,
   searchIcon: `text-[#8a939b] mx-3 font-bold text-lg`,
@@ -22,8 +22,7 @@ const Header = () => {
     <div className={style.wrapper}>
       <a href="/">
         <div className={style.logoContainer}>
-          <Image src={openseaLogo} height={40} width={40} alt="some" />
-          <div className={style.logoText}>Opensea</div>
+          <Image src={logosvg} height={70} width={70} alt="some" />
         </div>
       </a>
       <div className={style.searchBar}>
