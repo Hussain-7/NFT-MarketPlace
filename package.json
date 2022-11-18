@@ -7,8 +7,10 @@
   },
   "dependencies": {
     "@3rdweb/hooks": "^1.9.2",
+    "@3rdweb/sdk": "^1.42.1",
     "@sanity/cli": "^2.35.0",
     "@sanity/client": "^3.4.1",
+    "ethers": "^5.7.2",
     "next": "latest",
     "react": "18.2.0",
     "react-dom": "18.2.0",
