@@ -5,9 +5,8 @@ import logosvg from "../assets/logo.svg";
 import { AiOutlineSearch } from "react-icons/ai";
 import { CgProfile } from "react-icons/cg";
 import { MdOutlineAccountBalanceWallet } from "react-icons/md";
-
 const style = {
-  wrapper: `bg-[#04111d] w-[100%] px-[3rem] py-[0.8rem] flex flex-col  items-center gap-y-5 lg:flex-row`,
+  wrapper: `bg-[#04111d] w-[100%] px-[10%] py-[0.8rem] flex flex-col  items-center gap-y-5 lg:flex-row`,
   logoContainer: `flex items-center cursor-pointer mr-4`,
   logoText: ` ml-[0.8rem] text-white font-semibold text-2xl`,
   searchBar: `flex flex-1 mx-[0.8rem] w-max-[520px] items-center bg-[#363840] rounded-[0.8rem] hover:bg-[#4c505c]`,
@@ -38,8 +37,8 @@ const Header = () => {
         <a href="/collections/0x97c4ffB08C8438e671951Ae957Dc77c1f0777D75">
           <div className={style.headerItem}> Collections </div>
         </a>
-        <div className={style.headerItem}> Stats </div>
-        <div className={style.headerItem}> Resources </div>
+        {/* <div className={style.headerItem}> Stats </div> */}
+        {/* <div className={style.headerItem}> Resources </div> */}
         <div className={style.headerItem}> Create </div>
         <div className={style.headerIcon}>
           <CgProfile />
