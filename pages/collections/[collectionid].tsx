@@ -8,9 +8,10 @@ import { CgWebsite } from "react-icons/cg";
 import { AiOutlineInstagram, AiOutlineTwitter } from "react-icons/ai";
 import { HiDotsVertical } from "react-icons/hi";
 import NFTCard from "../../components/NFTCard";
+import Loader from "../../components/Loader";
 
 const style = {
-  bannerImageContainer: `h-[20vh] w-screen overflow-hidden flex justify-center items-center`,
+  bannerImageContainer: ` lg:h-[20rem] w-screen overflow-hidden flex justify-center items-center`,
   bannerImage: `w-full object-cover`,
   infoContainer: `w-screen px-4`,
   midRow: `w-full flex justify-center text-white`,
@@ -62,7 +63,7 @@ const CollectionId = () => {
   });
   const [nfts, setNfts] = useState([]);
   const [listings, setListings] = useState([]);
-
+  const [loaded, setLoaded] = useState(false);
   const nftModule = useMemo(() => {
     if (!provider) return;
 
@@ -83,6 +84,7 @@ const CollectionId = () => {
       const nfts = await nftModule.getAll();
       // @ts-ignore
       setNfts(nfts);
+      setLoaded(true);
     })();
   }, [nftModule]);
 
@@ -235,16 +237,23 @@ const CollectionId = () => {
           <div className={style.description}>{collection?.description}</div>
         </div>
       </div>
-      <div className="my-[3rem] grid justify-center items-center grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-        {nfts.map((nftItem, id) => (
-          <NFTCard
-            key={id}
-            nftItem={nftItem}
-            title={collection?.title}
-            listings={listings}
-          />
-        ))}
-      </div>
+      {false ? (
+        <div className="my-[3rem] grid justify-center items-center grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+          {nfts.map((nftItem, id) => (
+            <NFTCard
+              key={id}
+              nftItem={nftItem}
+              title={collection?.title}
+              listings={listings}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="flex flex-row items-center justify-center my-[4rem] text-white animate-pulse">
+          <Loader />
+          <span className="text-xl ml-4">Loading NFTs...</span>
+        </div>
+      )}
     </div>
   );
 };
