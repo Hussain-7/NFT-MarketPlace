@@ -1,6 +1,10 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import { ThirdwebWeb3Provider } from "@3rdweb/hooks";
+import {
+  MarketPlaceContext,
+  MarketPlaceProvider,
+} from "../context/MarketPlace";
 const supportedChainIds = [5];
 const connectors = {
   injected: {},
@@ -13,7 +17,9 @@ function MyApp({ Component, pageProps }: AppProps) {
       supportedChainIds={supportedChainIds}
       connectors={connectors}
     >
-      <Component {...pageProps} />
+      <MarketPlaceProvider>
+        <Component {...pageProps} />
+      </MarketPlaceProvider>
     </ThirdwebWeb3Provider>
   );
 }

@@ -1,7 +1,13 @@
 import { useWeb3 } from "@3rdweb/hooks";
 import { ThirdwebSDK } from "@3rdweb/sdk";
 import { useRouter } from "next/router";
-import React, { useMemo, useState, useEffect, useCallback } from "react";
+import React, {
+  useMemo,
+  useState,
+  useEffect,
+  useCallback,
+  useContext,
+} from "react";
 import { client } from "../../lib/sanityClient";
 import Header from "../../components/Header";
 import { CgWebsite } from "react-icons/cg";
@@ -9,6 +15,7 @@ import { AiOutlineInstagram, AiOutlineTwitter } from "react-icons/ai";
 import { HiDotsVertical } from "react-icons/hi";
 import NFTCard from "../../components/NFTCard";
 import Loader from "../../components/Loader";
+import { MarketPlaceContext } from "../../context/MarketPlace";
 
 const style = {
   bannerImageContainer: ` lg:h-[20rem] w-screen overflow-hidden flex justify-center items-center`,
@@ -61,56 +68,57 @@ const CollectionId = () => {
     allOwners: [],
     description: "",
   });
-  const [nfts, setNfts] = useState([]);
-  const [listings, setListings] = useState([]);
-  const [loaded, setLoaded] = useState(false);
-  const nftModule = useMemo(() => {
-    if (!provider) return;
+  // const [nfts, setNfts] = useState([]);
+  // const [listings, setListings] = useState([]);
+  // const [loaded, setLoaded] = useState(false);
+  const { nfts, listings, loaded } = useContext(MarketPlaceContext);
+  // const nftModule = useMemo(() => {
+  //   if (!provider) return;
 
-    const sdk = new ThirdwebSDK(
-      provider.getSigner(),
-      // @ts-ignore
-      "https://eth-goerli.g.alchemy.com/v2/sJeqdSsAWetNNKmR__bWMkAXzcmh6a98"
-    );
-    return sdk.getNFTModule(
-      "0x97c4ffB08C8438e671951Ae957Dc77c1f0777D75" || (collectionid as string)
-    );
-  }, [provider]);
+  //   const sdk = new ThirdwebSDK(
+  //     provider.getSigner(),
+  //     // @ts-ignore
+  //     "https://eth-goerli.g.alchemy.com/v2/sJeqdSsAWetNNKmR__bWMkAXzcmh6a98"
+  //   );
+  //   return sdk.getNFTModule(
+  //     "0x97c4ffB08C8438e671951Ae957Dc77c1f0777D75" || (collectionid as string)
+  //   );
+  // }, [provider]);
 
-  // get all NFTs in the collection
-  useEffect(() => {
-    if (!nftModule) return;
-    (async () => {
-      const nfts = await nftModule.getAll();
-      // @ts-ignore
-      setNfts(nfts);
-      setLoaded(true);
-    })();
-  }, [nftModule]);
+  // // get all NFTs in the collection
+  // useEffect(() => {
+  //   if (!nftModule) return;
+  //   (async () => {
+  //     const nfts = await nftModule.getAll();
+  //     // @ts-ignore
+  //     setNfts(nfts);
+  //     setLoaded(true);
+  //   })();
+  // }, [nftModule]);
 
-  const marketPlaceModule = useMemo(() => {
-    if (!provider) return;
+  // const marketPlaceModule = useMemo(() => {
+  //   if (!provider) return;
 
-    const sdk = new ThirdwebSDK(
-      provider.getSigner(),
-      // @ts-ignore
-      "https://eth-goerli.g.alchemy.com/v2/sJeqdSsAWetNNKmR__bWMkAXzcmh6a98"
-    );
-    return sdk.getMarketplaceModule(
-      "0xFE64BFAC909d23027691074E833DcB29a3233523"
-    );
-  }, [provider]);
+  //   const sdk = new ThirdwebSDK(
+  //     provider.getSigner(),
+  //     // @ts-ignore
+  //     "https://eth-goerli.g.alchemy.com/v2/sJeqdSsAWetNNKmR__bWMkAXzcmh6a98"
+  //   );
+  //   return sdk.getMarketplaceModule(
+  //     "0xFE64BFAC909d23027691074E833DcB29a3233523"
+  //   );
+  // }, [provider]);
 
-  // get all listings in the collection
-  useEffect(() => {
-    if (!marketPlaceModule) return;
-    (async () => {
-      const listings = await marketPlaceModule.getAllListings();
-      console.log("listings", listings);
-      // @ts-ignore
-      setListings(listings);
-    })();
-  }, [marketPlaceModule]);
+  // // get all listings in the collection
+  // useEffect(() => {
+  //   if (!marketPlaceModule) return;
+  //   (async () => {
+  //     const listings = await marketPlaceModule.getAllListings();
+  //     console.log("listings", listings);
+  //     // @ts-ignore
+  //     setListings(listings);
+  //   })();
+  // }, [marketPlaceModule]);
 
   const fetchCollectionData = useCallback(
     async (sanityClient = client) => {
@@ -237,7 +245,7 @@ const CollectionId = () => {
           <div className={style.description}>{collection?.description}</div>
         </div>
       </div>
-      {false ? (
+      {loaded ? (
         <div className="my-[3rem] grid justify-center items-center grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
           {nfts.map((nftItem, id) => (
             <NFTCard

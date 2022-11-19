@@ -1,23 +1,25 @@
 import { useWeb3 } from "@3rdweb/hooks";
 import { ThirdwebSDK } from "@3rdweb/sdk";
-import { useRouter } from "next/router";
-import React, { useMemo, useState, useEffect } from "react";
-import Header from "../../components/Header";
+import { NextComponentType, NextPageContext } from "next";
+import { createContext, useState, useEffect, useMemo } from "react";
 
-const style = {
-  wrapper: `flex flex-col items-center container-lg text-[#e5e8eb]`,
-  container: `container p-6`,
-  topContent: `flex`,
-  nftImgContainer: `flex-1 mr-4`,
-  detailsContainer: `flex-[2] ml-4`,
+// create a context for managing nfts and listings
+export const MarketPlaceContext = createContext({
+  nfts: [],
+  listings: [],
+  loaded: false,
+});
+
+type Props = {
+  children: React.ReactNode;
 };
 
-const NFTItem = () => {
+// create a provider for the context
+export const MarketPlaceProvider = ({ children }: Props) => {
   const { provider } = useWeb3();
-  const [selectedNft, setSelectedNft] = useState<any>(null);
+  const [nfts, setNfts] = useState<any>([]);
   const [listings, setListings] = useState<any>([]);
   const [loaded, setLoaded] = useState(false);
-  const router = useRouter();
 
   const nftModule = useMemo(() => {
     if (!provider) return;
@@ -64,8 +66,9 @@ const NFTItem = () => {
       setListings(listings);
     })();
   }, [marketPlaceModule]);
-
-  return <div></div>;
+  return (
+    <MarketPlaceContext.Provider value={{ nfts, listings, loaded }}>
+      {children}
+    </MarketPlaceContext.Provider>
+  );
 };
-
-export default NFTItem;
