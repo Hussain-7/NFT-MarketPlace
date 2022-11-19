@@ -9,12 +9,12 @@ import React, {
   useContext,
 } from "react";
 import { client } from "../../lib/sanityClient";
-import Header from "../../components/Header";
+import Header from "../../components/common/Header";
 import { CgWebsite } from "react-icons/cg";
 import { AiOutlineInstagram, AiOutlineTwitter } from "react-icons/ai";
 import { HiDotsVertical } from "react-icons/hi";
-import NFTCard from "../../components/NFTCard";
-import Loader from "../../components/Loader";
+import NFTCard from "../../components/collections/NFTCard";
+import Loader from "../../components/common/Loader";
 import { MarketPlaceContext } from "../../context/MarketPlace";
 
 const style = {

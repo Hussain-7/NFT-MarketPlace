@@ -2,7 +2,7 @@ import { useWeb3, Web3ContextInterface } from "@3rdweb/hooks";
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
-import Header from "../components/Header";
+import Header from "../components/common/Header";
 import Hero from "../components/Hero";
 import { useEffect } from "react";
 import { client } from "../lib/sanityClient";

@@ -2,7 +2,8 @@ import { useWeb3 } from "@3rdweb/hooks";
 import { ThirdwebSDK } from "@3rdweb/sdk";
 import { useRouter } from "next/router";
 import React, { useMemo, useState, useEffect } from "react";
-import Header from "../../components/Header";
+import Header from "../../components/common/Header";
+import NFTImage from "../../components/nfts/NFTImage";
 
 const style = {
   wrapper: `flex flex-col items-center container-lg text-[#e5e8eb]`,
@@ -37,7 +38,7 @@ const NFTItem = () => {
     (async () => {
       const nfts = await nftModule.getAll();
       // @ts-ignore
-      setNfts(nfts);
+      setSelectedNft(nfts);
       setLoaded(true);
     })();
   }, [nftModule]);
@@ -65,7 +66,12 @@ const NFTItem = () => {
     })();
   }, [marketPlaceModule]);
 
-  return <div></div>;
+  return (
+    <div>
+      <Header />
+      <NFTImage />
+    </div>
+  );
 };
 
 export default NFTItem;
