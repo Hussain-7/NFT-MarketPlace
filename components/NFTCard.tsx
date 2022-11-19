@@ -14,14 +14,14 @@ type NFTCardProps = {
 };
 
 const style = {
-  wrapper: `bg-[#303339] flex-auto w-[14rem] h-[22rem] my-10 mx-5 rounded-2xl overflow-hidden cursor-pointer`,
+  wrapper: `bg-[#303339] flex-auto my-10 mx-auto rounded-2xl overflow-hidden cursor-pointer`,
   imgContainer: `h-2/3 w-full overflow-hidden flex justify-center items-center`,
   nftImg: `w-full object-cover`,
   details: `p-3`,
   info: `flex justify-between text-[#e4e8eb] drop-shadow-xl`,
   infoLeft: `flex-0.6 flex-wrap`,
   collectionName: `font-semibold text-sm text-[#8a939b]`,
-  assetName: `font-bold text-lg mt-2`,
+  assetName: `font-bold text-lg mt-2 text-left`,
   infoRight: `flex-0.4 text-right`,
   priceTag: `font-semibold text-sm text-[#8a939b]`,
   priceValue: `flex items-center text-xl font-bold mt-2`,
@@ -70,7 +70,7 @@ const NFTCard = ({ nftItem, listings, title }: NFTCardProps) => {
                   alt="eth"
                   className={style.ethLogo}
                 />
-                {price}
+                {price / 10 ** 18}
               </div>
             </div>
           )}

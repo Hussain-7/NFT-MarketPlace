@@ -23,7 +23,7 @@ const style = {
   divider: `border-r-2`,
   title: `text-5xl font-bold mb-4`,
   createdBy: `text-lg mb-4`,
-  statsContainer: `w-[44vw] flex justify-between py-4 border border-[#151b22] rounded-xl mb-4`,
+  statsContainer: `w-[80%] md:w-[65%]  flex flex-col md:flex-row items-center justify-center md:justify-between py-4 border border-[#151b22] rounded-xl mb-4`,
   collectionStat: `w-1/4`,
   statValue: `text-3xl font-bold w-full flex items-center justify-center`,
   ethLogo: `h-6 mr-2`,
@@ -45,7 +45,8 @@ type collectionType = {
 const CollectionId = () => {
   const router = useRouter();
   const { provider } = useWeb3();
-  const { collectionId } = router.query;
+  const { collectionid } = router.query;
+  console.log(collectionid);
 
   const [collection, setCollection] = useState<collectionType>({
     imageUrl: "https://via.placeholder.com/200",
@@ -70,8 +71,9 @@ const CollectionId = () => {
       // @ts-ignore
       "https://eth-goerli.g.alchemy.com/v2/sJeqdSsAWetNNKmR__bWMkAXzcmh6a98"
     );
-    console.log("sdk", sdk);
-    return sdk.getNFTModule(collectionId as string);
+    return sdk.getNFTModule(
+      "0x97c4ffB08C8438e671951Ae957Dc77c1f0777D75" || (collectionid as string)
+    );
   }, [provider]);
 
   // get all NFTs in the collection
@@ -110,7 +112,7 @@ const CollectionId = () => {
 
   const fetchCollectionData = useCallback(
     async (sanityClient = client) => {
-      const query = `*[_type == "marketItems" && contractAddress == "${collectionId}" ] {
+      const query = `*[_type == "marketItems" && contractAddress == "${collectionid}" ] {
         "imageUrl": profileImage.asset->url,
         "bannerImageUrl": bannerImage.asset->url,
         volumeTraded,
@@ -126,14 +128,14 @@ const CollectionId = () => {
       setCollection(collectionData[0]);
       console.log("collectionData", collectionData);
     },
-    [collectionId]
+    [collectionid]
   );
 
   useEffect(() => {
-    if (!collectionId) return;
-    console.log("collectionId", collectionId);
+    if (!collectionid) return;
+    console.log("collectionid", collectionid);
     fetchCollectionData();
-  }, [collectionId]);
+  }, [collectionid]);
 
   return (
     <div className="overflow-hidden">
@@ -233,7 +235,7 @@ const CollectionId = () => {
           <div className={style.description}>{collection?.description}</div>
         </div>
       </div>
-      <div className="flex flex-wrap ">
+      <div className="my-[3rem] mx-[2rem] grid justify-center items-center grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5">
         {nfts.map((nftItem, id) => (
           <NFTCard
             key={id}
