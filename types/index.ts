@@ -1,4 +1,4 @@
-import { MarketplaceModule } from "@3rdweb/sdk";
+import { Marketplace, NFTCollection } from "@thirdweb-dev/sdk";
 import { BigNumber } from "ethers";
 
 // For general use case
@@ -41,7 +41,8 @@ export type ContextType = {
   nfts: Array<NFT>;
   listings: Array<Listing>;
   loaded: boolean;
-  marketPlaceModule: MarketplaceModule | undefined;
+  marketPlaceContract: Promise<Marketplace> | undefined;
+  nftContract: Promise<NFTCollection> | undefined;
 };
 
 export type NFTProps = {

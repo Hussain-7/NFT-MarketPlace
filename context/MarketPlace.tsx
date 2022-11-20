@@ -1,5 +1,6 @@
-import { useWeb3 } from "@3rdweb/hooks";
-import { MarketplaceModule, ThirdwebSDK } from "@3rdweb/sdk";
+import { useUser } from "@thirdweb-dev/react";
+import { ThirdwebSDK } from "@thirdweb-dev/sdk";
+import { providers } from "ethers";
 import { NextComponentType, NextPageContext } from "next";
 import { createContext, useState, useEffect, useMemo } from "react";
 import { ContextType, Listing, NFT } from "../types";
@@ -9,7 +10,8 @@ export const MarketPlaceContext = createContext<ContextType>({
   nfts: [],
   listings: [],
   loaded: false,
-  marketPlaceModule: undefined,
+  marketPlaceContract: undefined,
+  nftContract: undefined,
 });
 
 type Props = {
@@ -18,60 +20,61 @@ type Props = {
 
 // create a provider for the context
 export const MarketPlaceProvider = ({ children }: Props) => {
-  const { provider } = useWeb3();
   const [nfts, setNfts] = useState<Array<NFT>>([]);
   const [listings, setListings] = useState<Array<Listing>>([]);
   const [loaded, setLoaded] = useState(false);
-  const nftModule = useMemo(() => {
-    if (!provider) return;
+  const { user } = useUser();
+  const nftContract = useMemo(() => {
     const sdk = new ThirdwebSDK(
-      provider.getSigner()
-      // @ts-ignore
-      // "https://eth-goerli.g.alchemy.com/v2/sJeqdSsAWetNNKmR__bWMkAXzcmh6a98"
+      "https://eth-goerli.g.alchemy.com/v2/sJeqdSsAWetNNKmR__bWMkAXzcmh6a98"
     );
-    return sdk.getNFTModule(
-      "0x97c4ffB08C8438e671951Ae957Dc77c1f0777D75" as string
+    return sdk.getContract(
+      "0x97c4ffB08C8438e671951Ae957Dc77c1f0777D75",
+      "nft-collection"
     );
-  }, [provider]);
+  }, []);
+
+  useEffect(() => {
+    console.log("user", user);
+  }, [user]);
+
+  const marketPlaceContract = useMemo(() => {
+    // get provider from useMetamask
+
+    const sdk = new ThirdwebSDK(
+      "https://eth-goerli.g.alchemy.com/v2/sJeqdSsAWetNNKmR__bWMkAXzcmh6a98"
+    );
+    return sdk.getContract(
+      "0xFE64BFAC909d23027691074E833DcB29a3233523",
+      "marketplace"
+    );
+  }, []);
 
   // get all NFTs in the collection
   useEffect(() => {
-    if (!nftModule) return;
+    if (!nftContract) return;
     (async () => {
-      const nfts = await nftModule.getAll();
+      const nfts = await (await nftContract)!.getAll();
       // @ts-ignore
       setNfts(nfts);
       console.log("Context: nfts", nfts);
       setLoaded(true);
     })();
-  }, [nftModule]);
-
-  const marketPlaceModule = useMemo(() => {
-    if (!provider) return;
-
-    const sdk = new ThirdwebSDK(
-      provider.getSigner()
-      // @ts-ignore
-      // "https://eth-goerli.g.alchemy.com/v2/sJeqdSsAWetNNKmR__bWMkAXzcmh6a98"
-    );
-    return sdk.getMarketplaceModule(
-      "0xFE64BFAC909d23027691074E833DcB29a3233523"
-    );
-  }, [provider]);
+  }, [nftContract]);
 
   // get all listings in the collection
   useEffect(() => {
-    if (!marketPlaceModule) return;
+    if (!marketPlaceContract) return;
     (async () => {
-      const listings = await marketPlaceModule.getAllListings();
+      const listings = await (await marketPlaceContract)!.getAllListings();
       // @ts-ignore
       setListings(listings);
       console.log("Context: listings", listings);
     })();
-  }, [marketPlaceModule]);
+  }, [marketPlaceContract]);
   return (
     <MarketPlaceContext.Provider
-      value={{ nfts, listings, loaded, marketPlaceModule }}
+      value={{ nfts, listings, loaded, marketPlaceContract, nftContract }}
     >
       {children}
     </MarketPlaceContext.Provider>

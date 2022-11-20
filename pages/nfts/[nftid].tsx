@@ -1,4 +1,3 @@
-import { useWeb3 } from "@3rdweb/hooks";
 import { useRouter } from "next/router";
 import React, { useMemo, useState, useEffect, useContext } from "react";
 import Header from "../../components/common/Header";

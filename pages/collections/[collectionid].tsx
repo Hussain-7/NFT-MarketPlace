@@ -1,4 +1,3 @@
-import { useWeb3 } from "@3rdweb/hooks";
 import { useRouter } from "next/router";
 import React, {
   useMemo,

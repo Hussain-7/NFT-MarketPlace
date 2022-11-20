@@ -1,4 +1,11 @@
 import Image from "next/image";
+import {
+  useAddress,
+  useUser,
+  useDisconnect,
+  useLogout,
+  useMetamask,
+} from "@thirdweb-dev/react";
 import Link from "next/link";
 import React from "react";
 import logosvg from "../../assets/logo.svg";
@@ -17,6 +24,8 @@ const style = {
   headerIcon: `text-[#8a939b] text-3xl font-black px-4 hover:text-white cursor-pointer`,
 };
 const Header = () => {
+  const disconnect = useDisconnect();
+  const logout = useLogout();
   return (
     <div className={style.wrapper}>
       <a href="/">
@@ -41,7 +50,7 @@ const Header = () => {
         {/* <div className={style.headerItem}> Resources </div> */}
         <div className={style.headerItem}> Create </div>
         <div className={style.headerIcon}>
-          <CgProfile />
+          <CgProfile onClick={disconnect} />
         </div>
         <div className={style.headerIcon}>
           <MdOutlineAccountBalanceWallet />
