@@ -11,14 +11,14 @@ import { NFT } from "../../types";
 const style = {
   wrapper: `flex flex-col items-center container-lg text-[#e5e8eb]`,
   container: `container p-6`,
-  topContent: `flex`,
+  topContent: `flex flex-col space-y-8 md:flex-row md:space-y-0`,
   nftImgContainer: `flex-1 mr-4`,
   detailsContainer: `flex-[2] ml-4`,
 };
 
 const NFTItem = () => {
   const router = useRouter();
-  const { nfts, listings, loaded } = useContext(MarketPlaceContext);
+  const { nfts, listings } = useContext(MarketPlaceContext);
   const [selectedNft, setSelectedNft] = useState<any>(null);
   useEffect(() => {
     console.log("nfts in NFTItem", nfts);
