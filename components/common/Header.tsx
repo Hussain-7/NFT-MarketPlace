@@ -33,11 +33,11 @@ const Header = () => {
   };
   return (
     <div className={style.wrapper}>
-      <a href="/">
+      <Link href="/">
         <div className={style.logoContainer}>
           <Image src={logosvg} height={70} width={70} alt="some" />
         </div>
-      </a>
+      </Link>
       <div className={style.searchBar}>
         <div className={style.searchIcon}>
           <AiOutlineSearch />
@@ -48,9 +48,9 @@ const Header = () => {
         />
       </div>
       <div className={style.headerItems}>
-        <a href="/collections/0x97c4ffB08C8438e671951Ae957Dc77c1f0777D75">
+        <Link href="/collections/0x97c4ffB08C8438e671951Ae957Dc77c1f0777D75">
           <div className={style.headerItem}> Collections </div>
-        </a>
+        </Link>
         {/* <div className={style.headerItem}> Stats </div> */}
         {/* <div className={style.headerItem}> Resources </div> */}
         <div className={style.headerItem}> Create </div>

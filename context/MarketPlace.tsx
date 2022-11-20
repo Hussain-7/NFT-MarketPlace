@@ -9,7 +9,8 @@ import { ContextType, Listing, NFT } from "../types";
 export const MarketPlaceContext = createContext<ContextType>({
   nfts: [],
   listings: [],
-  loaded: false,
+  nftsLoaded: false,
+  activeListingsLoaded: false,
   marketPlaceContract: undefined,
   nftContract: undefined,
 });
@@ -21,7 +22,8 @@ type Props = {
 export const MarketPlaceProvider = ({ children }: Props) => {
   const [nfts, setNfts] = useState<Array<NFT>>([]);
   const [listings, setListings] = useState<Array<Listing>>([]);
-  const [loaded, setLoaded] = useState(false);
+  const [nftsLoaded, setNftsLoaded] = useState(false);
+  const [activeListingsLoaded, setActiveListingsLoaded] = useState(false);
   const nftContract = useMemo(() => {
     const sdk = new ThirdwebSDK(
       "https://eth-goerli.g.alchemy.com/v2/sJeqdSsAWetNNKmR__bWMkAXzcmh6a98"
@@ -31,7 +33,6 @@ export const MarketPlaceProvider = ({ children }: Props) => {
       "nft-collection"
     );
   }, []);
-
 
   const marketPlaceContract = useMemo(() => {
     const sdk = new ThirdwebSDK(
@@ -51,7 +52,7 @@ export const MarketPlaceProvider = ({ children }: Props) => {
       // @ts-ignore
       setNfts(nfts);
       console.log("Context: nfts", nfts);
-      setLoaded(true);
+      setNftsLoaded(true);
     })();
   }, [nftContract]);
 
@@ -62,12 +63,21 @@ export const MarketPlaceProvider = ({ children }: Props) => {
       const listings = await (await marketPlaceContract)!.getActiveListings();
       // @ts-ignore
       setListings(listings);
+      setActiveListingsLoaded(true);
       console.log("Context: listings", listings);
     })();
   }, [marketPlaceContract]);
+
   return (
     <MarketPlaceContext.Provider
-      value={{ nfts, listings, loaded, marketPlaceContract, nftContract }}
+      value={{
+        nfts,
+        listings,
+        nftsLoaded,
+        activeListingsLoaded,
+        marketPlaceContract,
+        nftContract,
+      }}
     >
       {children}
     </MarketPlaceContext.Provider>

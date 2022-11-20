@@ -66,7 +66,8 @@ const CollectionId = () => {
     description: "",
   });
 
-  const { nfts, listings, loaded } = useContext(MarketPlaceContext);
+  const { nfts, listings, nftsLoaded, activeListingsLoaded } =
+    useContext(MarketPlaceContext);
   const fetchCollectionData = useCallback(
     async (sanityClient = client) => {
       const query = `*[_type == "marketItems" && contractAddress == "${collectionid}" ] {
@@ -192,7 +193,7 @@ const CollectionId = () => {
           <div className={style.description}>{collection?.description}</div>
         </div>
       </div>
-      {loaded ? (
+      {nftsLoaded && activeListingsLoaded ? (
         <div className="my-[3rem] grid justify-center items-center grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
           {nfts.map((nftItem, id) => (
             <NFTCard

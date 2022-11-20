@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Router from "next/router";
 import { BiHeart } from "react-icons/bi";
 import { Listing, NFT } from "../../types";
+import { HiTag } from "react-icons/hi";
 
 type NFTCardProps = {
   nftItem: NFT;
@@ -23,18 +24,21 @@ const style = {
   priceValue: `flex items-center text-xl font-bold mt-2`,
   ethLogo: `h-5 mr-2`,
   likes: `text-[#8a939b] font-bold flex items-center w-full justify-end mt-3`,
+  onSalelikes: `text-[#8a939b] font-bold flex items-center w-full justify-between  mt-3`,
   likeIcon: `text-xl mr-2`,
 };
 
 const NFTCard = ({ nftItem, listings, title }: NFTCardProps) => {
   const [isListed, setIsListed] = useState(false);
-  const [price, setPrice] = useState<number>(0);
+  const [price, setPrice] = useState<string>("");
 
   useEffect(() => {
-    const listing = listings.find((listing) => listing.asset.id === nftItem.metadata.id);
+    const listing = listings.find(
+      (listing) => listing.asset.id === nftItem.metadata.id
+    );
     if (Boolean(listing)) {
       setIsListed(true);
-      setPrice(parseInt(listing!.buyoutCurrencyValuePerToken.displayValue));
+      setPrice(listing!.buyoutCurrencyValuePerToken.displayValue);
     }
   }, [listings, nftItem]);
 
@@ -49,7 +53,11 @@ const NFTCard = ({ nftItem, listings, title }: NFTCardProps) => {
       }}
     >
       <div className={style.imgContainer}>
-        <img src={nftItem.metadata.image} alt={nftItem.metadata.name} className={style.nftImg} />
+        <img
+          src={nftItem.metadata.image}
+          alt={nftItem.metadata.name}
+          className={style.nftImg}
+        />
       </div>
       <div className={style.details}>
         <div className={style.info}>
@@ -66,16 +74,20 @@ const NFTCard = ({ nftItem, listings, title }: NFTCardProps) => {
                   alt="eth"
                   className={style.ethLogo}
                 />
-                {price / 10 ** 18}
+                {price}
               </div>
             </div>
           )}
         </div>
-        <div className={style.likes}>
-          <span className={style.likeIcon}>
-            <BiHeart />
-          </span>{" "}
-          {nftItem.metadata.likes || "34.3k"}
+        <div className={isListed ? style.onSalelikes : style.likes}>
+          {isListed && <HiTag />}
+          <div className="flex items-center justify-center">
+            {" "}
+            <span className={style.likeIcon}>
+              <BiHeart />
+            </span>{" "}
+            {nftItem.metadata.likes || "34.3k"}
+          </div>
         </div>
       </div>
     </div>
