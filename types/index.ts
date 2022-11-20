@@ -1,5 +1,6 @@
 import { BigNumber } from "ethers";
 
+// For general use case
 export type ObjectArray = Array<{
   [key: string]: string;
 }>;
@@ -14,6 +15,7 @@ export type NFT = {
   external_url: string;
   likes: number;
 };
+
 export type Listing = {
   id: string;
   asset: NFT;
@@ -39,6 +41,7 @@ export type ContextType = {
   listings: Array<Listing>;
   loaded: boolean;
 };
+
 export type NFTProps = {
   selectedNft: NFT;
 };

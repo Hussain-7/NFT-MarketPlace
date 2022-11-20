@@ -2,7 +2,7 @@ import { useWeb3 } from "@3rdweb/hooks";
 import { ThirdwebSDK } from "@3rdweb/sdk";
 import { NextComponentType, NextPageContext } from "next";
 import { createContext, useState, useEffect, useMemo } from "react";
-import { ContextType, Listing, NFT, ObjectArray } from "../types";
+import { ContextType, Listing, NFT } from "../types";
 
 // create a context for managing nfts and listings
 export const MarketPlaceContext = createContext<ContextType>({
