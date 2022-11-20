@@ -1,5 +1,4 @@
 import { useWeb3 } from "@3rdweb/hooks";
-import { ThirdwebSDK } from "@3rdweb/sdk";
 import { useRouter } from "next/router";
 import React, {
   useMemo,

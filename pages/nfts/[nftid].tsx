@@ -1,10 +1,10 @@
 import { useWeb3 } from "@3rdweb/hooks";
-import { ThirdwebSDK } from "@3rdweb/sdk";
 import { useRouter } from "next/router";
 import React, { useMemo, useState, useEffect, useContext } from "react";
 import Header from "../../components/common/Header";
 import GenralDetails from "../../components/nfts/GenralDetails";
 import ItemActivity from "../../components/nfts/ItemActivity";
+import Purchase from "../../components/nfts/Purchase";
 import NFTImage from "../../components/nfts/NFTImage";
 import { MarketPlaceContext } from "../../context/MarketPlace";
 import { NFT } from "../../types";
@@ -40,6 +40,11 @@ const NFTItem = () => {
             </div>
             <div className={style.detailsContainer}>
               <GenralDetails selectedNft={selectedNft} />
+              <Purchase
+                isListed={router?.query?.isListed}
+                selectedNft={selectedNft}
+                listings={listings}
+              />
             </div>
           </div>
           <ItemActivity selectedNft={selectedNft} />

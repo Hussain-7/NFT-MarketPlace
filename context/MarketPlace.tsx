@@ -1,5 +1,5 @@
 import { useWeb3 } from "@3rdweb/hooks";
-import { ThirdwebSDK } from "@3rdweb/sdk";
+import { MarketplaceModule, ThirdwebSDK } from "@3rdweb/sdk";
 import { NextComponentType, NextPageContext } from "next";
 import { createContext, useState, useEffect, useMemo } from "react";
 import { ContextType, Listing, NFT } from "../types";
@@ -9,6 +9,7 @@ export const MarketPlaceContext = createContext<ContextType>({
   nfts: [],
   listings: [],
   loaded: false,
+  marketPlaceModule: undefined,
 });
 
 type Props = {
@@ -21,13 +22,12 @@ export const MarketPlaceProvider = ({ children }: Props) => {
   const [nfts, setNfts] = useState<Array<NFT>>([]);
   const [listings, setListings] = useState<Array<Listing>>([]);
   const [loaded, setLoaded] = useState(false);
-
   const nftModule = useMemo(() => {
     if (!provider) return;
     const sdk = new ThirdwebSDK(
-      provider.getSigner(),
+      provider.getSigner()
       // @ts-ignore
-      "https://eth-goerli.g.alchemy.com/v2/sJeqdSsAWetNNKmR__bWMkAXzcmh6a98"
+      // "https://eth-goerli.g.alchemy.com/v2/sJeqdSsAWetNNKmR__bWMkAXzcmh6a98"
     );
     return sdk.getNFTModule(
       "0x97c4ffB08C8438e671951Ae957Dc77c1f0777D75" as string
@@ -50,9 +50,9 @@ export const MarketPlaceProvider = ({ children }: Props) => {
     if (!provider) return;
 
     const sdk = new ThirdwebSDK(
-      provider.getSigner(),
+      provider.getSigner()
       // @ts-ignore
-      "https://eth-goerli.g.alchemy.com/v2/sJeqdSsAWetNNKmR__bWMkAXzcmh6a98"
+      // "https://eth-goerli.g.alchemy.com/v2/sJeqdSsAWetNNKmR__bWMkAXzcmh6a98"
     );
     return sdk.getMarketplaceModule(
       "0xFE64BFAC909d23027691074E833DcB29a3233523"
@@ -70,7 +70,9 @@ export const MarketPlaceProvider = ({ children }: Props) => {
     })();
   }, [marketPlaceModule]);
   return (
-    <MarketPlaceContext.Provider value={{ nfts, listings, loaded }}>
+    <MarketPlaceContext.Provider
+      value={{ nfts, listings, loaded, marketPlaceModule }}
+    >
       {children}
     </MarketPlaceContext.Provider>
   );
