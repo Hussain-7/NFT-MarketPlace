@@ -11,7 +11,15 @@ const activeChainId = ChainId.Goerli;
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     // @ts-ignore
-    <ThirdwebProvider supportedChains={[activeChainId]}>
+    <ThirdwebProvider
+      supportedChains={[activeChainId]}
+      // https://eth-goerli.g.alchemy.com/v2/sJeqdSsAWetNNKmR__bWMkAXzcmh6a98
+      dAppMeta={{
+        name: "Exarta Marketplace",
+        description: "Exarta Marketplace",
+        url: "https://exarta.com",
+      }}
+    >
       <MarketPlaceProvider>
         <Component {...pageProps} />
       </MarketPlaceProvider>

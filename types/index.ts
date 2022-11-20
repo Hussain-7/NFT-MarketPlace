@@ -47,8 +47,8 @@ export type ContextType = {
   listings: Array<Listing>;
   nftsLoaded: boolean;
   activeListingsLoaded: boolean;
-  marketPlaceContract: Promise<Marketplace> | undefined;
-  nftContract: Promise<NFTCollection> | undefined;
+  marketPlaceContract: Marketplace | undefined;
+  nftContract: NFTCollection | undefined;
 };
 
 export type NFTProps = {
