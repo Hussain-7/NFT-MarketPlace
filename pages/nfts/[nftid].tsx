@@ -1,9 +1,11 @@
 import { useWeb3 } from "@3rdweb/hooks";
 import { ThirdwebSDK } from "@3rdweb/sdk";
 import { useRouter } from "next/router";
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect, useContext } from "react";
 import Header from "../../components/common/Header";
+import GenralDetails from "../../components/nfts/GenralDetails";
 import NFTImage from "../../components/nfts/NFTImage";
+import { MarketPlaceContext } from "../../context/MarketPlace";
 
 const style = {
   wrapper: `flex flex-col items-center container-lg text-[#e5e8eb]`,
@@ -14,62 +16,34 @@ const style = {
 };
 
 const NFTItem = () => {
-  const { provider } = useWeb3();
-  const [selectedNft, setSelectedNft] = useState<any>(null);
-  const [listings, setListings] = useState<any>([]);
-  const [loaded, setLoaded] = useState(false);
   const router = useRouter();
-
-  const nftModule = useMemo(() => {
-    if (!provider) return;
-    const sdk = new ThirdwebSDK(
-      provider.getSigner(),
-      // @ts-ignore
-      "https://eth-goerli.g.alchemy.com/v2/sJeqdSsAWetNNKmR__bWMkAXzcmh6a98"
-    );
-    return sdk.getNFTModule(
-      "0x97c4ffB08C8438e671951Ae957Dc77c1f0777D75" as string
-    );
-  }, [provider]);
-
-  // get all NFTs in the collection
+  const { nfts, listings, loaded } = useContext(MarketPlaceContext);
+  const [selectedNft, setSelectedNft] = useState<any>(null);
   useEffect(() => {
-    if (!nftModule) return;
-    (async () => {
-      const nfts = await nftModule.getAll();
-      // @ts-ignore
-      setSelectedNft(nfts);
-      setLoaded(true);
-    })();
-  }, [nftModule]);
-
-  const marketPlaceModule = useMemo(() => {
-    if (!provider) return;
-
-    const sdk = new ThirdwebSDK(
-      provider.getSigner(),
-      // @ts-ignore
-      "https://eth-goerli.g.alchemy.com/v2/sJeqdSsAWetNNKmR__bWMkAXzcmh6a98"
+    console.log("nfts in NFTItem", nfts);
+    if (nfts.length == 0) return;
+    const nft = nfts.find(
+      (nft: { [key: string]: string }) => nft.id === router.query.nftid
     );
-    return sdk.getMarketplaceModule(
-      "0xFE64BFAC909d23027691074E833DcB29a3233523"
-    );
-  }, [provider]);
-
-  // get all listings in the collection
-  useEffect(() => {
-    if (!marketPlaceModule) return;
-    (async () => {
-      const listings = await marketPlaceModule.getAllListings();
-      // @ts-ignore
-      setListings(listings);
-    })();
-  }, [marketPlaceModule]);
+    setSelectedNft(nft);
+    console.log("selectedNft", selectedNft);
+  }, [nfts]);
 
   return (
     <div>
       <Header />
-      <NFTImage />
+      <div className={style.wrapper}>
+        <div className={style.container}>
+          <div className={style.topContent}>
+            <div className={style.nftImgContainer}>
+              <NFTImage selectedNft={selectedNft} />
+            </div>
+            <div>
+              <GenralDetails selectedNft={selectedNft} />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

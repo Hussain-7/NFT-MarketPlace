@@ -3,8 +3,18 @@ import { ThirdwebSDK } from "@3rdweb/sdk";
 import { NextComponentType, NextPageContext } from "next";
 import { createContext, useState, useEffect, useMemo } from "react";
 
+type objectArray = Array<{
+  [key: string]: string;
+}>;
+
+type contextType = {
+  nfts: objectArray;
+  listings: objectArray;
+  loaded: boolean;
+};
+
 // create a context for managing nfts and listings
-export const MarketPlaceContext = createContext({
+export const MarketPlaceContext = createContext<contextType>({
   nfts: [],
   listings: [],
   loaded: false,
@@ -17,8 +27,8 @@ type Props = {
 // create a provider for the context
 export const MarketPlaceProvider = ({ children }: Props) => {
   const { provider } = useWeb3();
-  const [nfts, setNfts] = useState<any>([]);
-  const [listings, setListings] = useState<any>([]);
+  const [nfts, setNfts] = useState<objectArray>([]);
+  const [listings, setListings] = useState<objectArray>([]);
   const [loaded, setLoaded] = useState(false);
 
   const nftModule = useMemo(() => {
@@ -40,6 +50,7 @@ export const MarketPlaceProvider = ({ children }: Props) => {
       const nfts = await nftModule.getAll();
       // @ts-ignore
       setNfts(nfts);
+      console.log("Context: nfts", nfts);
       setLoaded(true);
     })();
   }, [nftModule]);
@@ -64,6 +75,7 @@ export const MarketPlaceProvider = ({ children }: Props) => {
       const listings = await marketPlaceModule.getAllListings();
       // @ts-ignore
       setListings(listings);
+      console.log("Context: listings", listings);
     })();
   }, [marketPlaceModule]);
   return (
