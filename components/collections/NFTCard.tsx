@@ -1,16 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Router from "next/router";
 import { BiHeart } from "react-icons/bi";
+import { Listing, NFT } from "../../types";
 
 type NFTCardProps = {
-  nftItem: {
-    id: string;
-    name: string;
-    image: string;
-    likes: number;
-  };
+  nftItem: NFT;
   title: string;
-  listings: any[];
+  listings: Array<Listing>;
 };
 
 const style = {
@@ -32,13 +28,13 @@ const style = {
 
 const NFTCard = ({ nftItem, listings, title }: NFTCardProps) => {
   const [isListed, setIsListed] = useState(false);
-  const [price, setPrice] = useState(0);
+  const [price, setPrice] = useState<number>(0);
 
   useEffect(() => {
     const listing = listings.find((listing) => listing.asset.id === nftItem.id);
     if (Boolean(listing)) {
       setIsListed(true);
-      setPrice(listing.buyoutCurrencyValuePerToken.displayValue);
+      setPrice(parseInt(listing!.buyoutCurrencyValuePerToken.displayValue));
     }
   }, [listings, nftItem]);
 
@@ -79,7 +75,7 @@ const NFTCard = ({ nftItem, listings, title }: NFTCardProps) => {
           <span className={style.likeIcon}>
             <BiHeart />
           </span>{" "}
-          {nftItem.likes}
+          {nftItem.likes || "34.3k"}
         </div>
       </div>
     </div>

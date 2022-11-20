@@ -2,19 +2,10 @@ import { useWeb3 } from "@3rdweb/hooks";
 import { ThirdwebSDK } from "@3rdweb/sdk";
 import { NextComponentType, NextPageContext } from "next";
 import { createContext, useState, useEffect, useMemo } from "react";
-
-type objectArray = Array<{
-  [key: string]: string;
-}>;
-
-type contextType = {
-  nfts: objectArray;
-  listings: objectArray;
-  loaded: boolean;
-};
+import { ContextType, Listing, NFT, ObjectArray } from "../types";
 
 // create a context for managing nfts and listings
-export const MarketPlaceContext = createContext<contextType>({
+export const MarketPlaceContext = createContext<ContextType>({
   nfts: [],
   listings: [],
   loaded: false,
@@ -27,8 +18,8 @@ type Props = {
 // create a provider for the context
 export const MarketPlaceProvider = ({ children }: Props) => {
   const { provider } = useWeb3();
-  const [nfts, setNfts] = useState<objectArray>([]);
-  const [listings, setListings] = useState<objectArray>([]);
+  const [nfts, setNfts] = useState<Array<NFT>>([]);
+  const [listings, setListings] = useState<Array<Listing>>([]);
   const [loaded, setLoaded] = useState(false);
 
   const nftModule = useMemo(() => {

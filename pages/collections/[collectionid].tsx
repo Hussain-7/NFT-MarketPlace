@@ -52,7 +52,6 @@ type collectionType = {
 };
 const CollectionId = () => {
   const router = useRouter();
-  const { provider } = useWeb3();
   const { collectionid } = router.query;
   console.log(collectionid);
 
@@ -68,58 +67,8 @@ const CollectionId = () => {
     allOwners: [],
     description: "",
   });
-  // const [nfts, setNfts] = useState([]);
-  // const [listings, setListings] = useState([]);
-  // const [loaded, setLoaded] = useState(false);
+
   const { nfts, listings, loaded } = useContext(MarketPlaceContext);
-  // const nftModule = useMemo(() => {
-  //   if (!provider) return;
-
-  //   const sdk = new ThirdwebSDK(
-  //     provider.getSigner(),
-  //     // @ts-ignore
-  //     "https://eth-goerli.g.alchemy.com/v2/sJeqdSsAWetNNKmR__bWMkAXzcmh6a98"
-  //   );
-  //   return sdk.getNFTModule(
-  //     "0x97c4ffB08C8438e671951Ae957Dc77c1f0777D75" || (collectionid as string)
-  //   );
-  // }, [provider]);
-
-  // // get all NFTs in the collection
-  // useEffect(() => {
-  //   if (!nftModule) return;
-  //   (async () => {
-  //     const nfts = await nftModule.getAll();
-  //     // @ts-ignore
-  //     setNfts(nfts);
-  //     setLoaded(true);
-  //   })();
-  // }, [nftModule]);
-
-  // const marketPlaceModule = useMemo(() => {
-  //   if (!provider) return;
-
-  //   const sdk = new ThirdwebSDK(
-  //     provider.getSigner(),
-  //     // @ts-ignore
-  //     "https://eth-goerli.g.alchemy.com/v2/sJeqdSsAWetNNKmR__bWMkAXzcmh6a98"
-  //   );
-  //   return sdk.getMarketplaceModule(
-  //     "0xFE64BFAC909d23027691074E833DcB29a3233523"
-  //   );
-  // }, [provider]);
-
-  // // get all listings in the collection
-  // useEffect(() => {
-  //   if (!marketPlaceModule) return;
-  //   (async () => {
-  //     const listings = await marketPlaceModule.getAllListings();
-  //     console.log("listings", listings);
-  //     // @ts-ignore
-  //     setListings(listings);
-  //   })();
-  // }, [marketPlaceModule]);
-
   const fetchCollectionData = useCallback(
     async (sanityClient = client) => {
       const query = `*[_type == "marketItems" && contractAddress == "${collectionid}" ] {

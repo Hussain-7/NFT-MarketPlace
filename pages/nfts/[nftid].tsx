@@ -6,6 +6,7 @@ import Header from "../../components/common/Header";
 import GenralDetails from "../../components/nfts/GenralDetails";
 import NFTImage from "../../components/nfts/NFTImage";
 import { MarketPlaceContext } from "../../context/MarketPlace";
+import { NFT } from "../../types";
 
 const style = {
   wrapper: `flex flex-col items-center container-lg text-[#e5e8eb]`,
@@ -22,9 +23,7 @@ const NFTItem = () => {
   useEffect(() => {
     console.log("nfts in NFTItem", nfts);
     if (nfts.length == 0) return;
-    const nft = nfts.find(
-      (nft: { [key: string]: string }) => nft.id === router.query.nftid
-    );
+    const nft = nfts.find((nft: NFT) => nft.id === router.query.nftid);
     setSelectedNft(nft);
     console.log("selectedNft", selectedNft);
   }, [nfts]);
