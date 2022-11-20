@@ -7,11 +7,12 @@ import {
   useMetamask,
 } from "@thirdweb-dev/react";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import logosvg from "../../assets/logo.svg";
 import { AiOutlineSearch } from "react-icons/ai";
 import { CgProfile } from "react-icons/cg";
 import { MdOutlineAccountBalanceWallet } from "react-icons/md";
+import { useRouter } from "next/router";
 const style = {
   wrapper: `bg-[#04111d] w-[100%] px-[10%] py-[0.8rem] flex flex-col  items-center gap-y-5 lg:flex-row`,
   logoContainer: `flex items-center cursor-pointer mr-4`,
@@ -24,8 +25,12 @@ const style = {
   headerIcon: `text-[#8a939b] text-3xl font-black px-4 hover:text-white cursor-pointer`,
 };
 const Header = () => {
+  const router = useRouter();
   const disconnect = useDisconnect();
-  const logout = useLogout();
+  const Logout = () => {
+    disconnect();
+    router.push("/");
+  };
   return (
     <div className={style.wrapper}>
       <a href="/">
@@ -50,7 +55,7 @@ const Header = () => {
         {/* <div className={style.headerItem}> Resources </div> */}
         <div className={style.headerItem}> Create </div>
         <div className={style.headerIcon}>
-          <CgProfile onClick={disconnect} />
+          <CgProfile onClick={Logout} />
         </div>
         <div className={style.headerIcon}>
           <MdOutlineAccountBalanceWallet />

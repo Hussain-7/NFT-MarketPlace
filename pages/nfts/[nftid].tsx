@@ -23,7 +23,7 @@ const NFTItem = () => {
   useEffect(() => {
     console.log("nfts in NFTItem", nfts);
     if (nfts.length == 0) return;
-    const nft = nfts.find((nft: NFT) => nft.id === router.query.nftid);
+    const nft = nfts.find((nft: NFT) => nft.metadata.id === router.query.nftid);
     setSelectedNft(nft);
     console.log("selectedNft", selectedNft);
   }, [nfts]);

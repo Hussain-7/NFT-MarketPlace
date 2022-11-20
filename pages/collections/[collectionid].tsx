@@ -205,8 +205,7 @@ const CollectionId = () => {
         </div>
       ) : (
         <div className="flex flex-row items-center justify-center my-[4rem] text-white animate-pulse">
-          <Loader />
-          <span className="text-xl ml-4">Loading NFTs...</span>
+          <Loader width={2} color="04111d" text={"Loading NFTs..."} />
         </div>
       )}
     </div>

@@ -31,7 +31,7 @@ const NFTCard = ({ nftItem, listings, title }: NFTCardProps) => {
   const [price, setPrice] = useState<number>(0);
 
   useEffect(() => {
-    const listing = listings.find((listing) => listing.asset.id === nftItem.id);
+    const listing = listings.find((listing) => listing.asset.id === nftItem.metadata.id);
     if (Boolean(listing)) {
       setIsListed(true);
       setPrice(parseInt(listing!.buyoutCurrencyValuePerToken.displayValue));
@@ -43,19 +43,19 @@ const NFTCard = ({ nftItem, listings, title }: NFTCardProps) => {
       className={style.wrapper}
       onClick={() => {
         Router.push({
-          pathname: `/nfts/${nftItem.id}`,
+          pathname: `/nfts/${nftItem.metadata.id}`,
           query: { isListed: isListed },
         });
       }}
     >
       <div className={style.imgContainer}>
-        <img src={nftItem.image} alt={nftItem.name} className={style.nftImg} />
+        <img src={nftItem.metadata.image} alt={nftItem.metadata.name} className={style.nftImg} />
       </div>
       <div className={style.details}>
         <div className={style.info}>
           <div className={style.infoLeft}>
             <div className={style.collectionName}>{title}</div>
-            <div className={style.assetName}>{nftItem.name}</div>
+            <div className={style.assetName}>{nftItem.metadata.name}</div>
           </div>
           {isListed && (
             <div className={style.infoRight}>
@@ -75,7 +75,7 @@ const NFTCard = ({ nftItem, listings, title }: NFTCardProps) => {
           <span className={style.likeIcon}>
             <BiHeart />
           </span>{" "}
-          {nftItem.likes || "34.3k"}
+          {nftItem.metadata.likes || "34.3k"}
         </div>
       </div>
     </div>

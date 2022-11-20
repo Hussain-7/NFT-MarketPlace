@@ -5,8 +5,7 @@ import { BigNumber } from "ethers";
 export type ObjectArray = Array<{
   [key: string]: string;
 }>;
-
-export type NFT = {
+export type NFT_METADATA = {
   id: string;
   name: string;
   image: string;
@@ -16,10 +15,16 @@ export type NFT = {
   external_url: string;
   likes: number;
 };
+export type NFT = {
+  owner: string;
+  type: string;
+  supply: string;
+  metadata: NFT_METADATA;
+};
 
 export type Listing = {
   id: string;
-  asset: NFT;
+  asset: NFT_METADATA;
   assetContractAddress: string;
   buyoutCurrencyValuePerToken: {
     name: string;

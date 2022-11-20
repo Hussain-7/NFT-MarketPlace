@@ -24,7 +24,6 @@ const style = {
 const Home: NextPage = () => {
   const connect = useMetamask();
   const address = useAddress();
-  const { user } = useUser();
   const [loading, setLoading] = useState(false);
   const logIn = () => {
     setLoading(true);
@@ -69,7 +68,7 @@ const Home: NextPage = () => {
         <div className={style.walletConnectWrapper}>
           <div className={style.button}>
             {loading ? (
-              <Loader width={2} color="04111d" text="Connect Wallet" />
+              <Loader width={2} color="[#04111d]" text="Connect Wallet" />
             ) : (
               <button onClick={logIn}>Connect Wallet</button>
             )}

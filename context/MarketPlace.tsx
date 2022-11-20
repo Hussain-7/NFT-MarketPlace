@@ -18,12 +18,10 @@ type Props = {
   children: React.ReactNode;
 };
 
-// create a provider for the context
 export const MarketPlaceProvider = ({ children }: Props) => {
   const [nfts, setNfts] = useState<Array<NFT>>([]);
   const [listings, setListings] = useState<Array<Listing>>([]);
   const [loaded, setLoaded] = useState(false);
-  const { user } = useUser();
   const nftContract = useMemo(() => {
     const sdk = new ThirdwebSDK(
       "https://eth-goerli.g.alchemy.com/v2/sJeqdSsAWetNNKmR__bWMkAXzcmh6a98"
@@ -34,13 +32,8 @@ export const MarketPlaceProvider = ({ children }: Props) => {
     );
   }, []);
 
-  useEffect(() => {
-    console.log("user", user);
-  }, [user]);
 
   const marketPlaceContract = useMemo(() => {
-    // get provider from useMetamask
-
     const sdk = new ThirdwebSDK(
       "https://eth-goerli.g.alchemy.com/v2/sJeqdSsAWetNNKmR__bWMkAXzcmh6a98"
     );
@@ -66,7 +59,7 @@ export const MarketPlaceProvider = ({ children }: Props) => {
   useEffect(() => {
     if (!marketPlaceContract) return;
     (async () => {
-      const listings = await (await marketPlaceContract)!.getAllListings();
+      const listings = await (await marketPlaceContract)!.getActiveListings();
       // @ts-ignore
       setListings(listings);
       console.log("Context: listings", listings);
