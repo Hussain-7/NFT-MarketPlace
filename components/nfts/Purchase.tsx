@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useContext, useMemo } from "react";
-import { v4 } from "uuid";
 
 import { Listing, NFT } from "../../types";
 import { HiTag } from "react-icons/hi";
@@ -92,7 +91,7 @@ const Purchase = ({ selectedNft, isOwner, isListed, marketNft }: Props) => {
       successMsg();
       setLoading(false);
     } catch (err) {
-      if (err?.message.includes("is no longer valid")) {
+      if (err instanceof Error && err.message.includes("is no longer valid")) {
         errorMsg("Listing is no longer valid");
       } else {
         errorMsg();
@@ -127,8 +126,6 @@ const Purchase = ({ selectedNft, isOwner, isListed, marketNft }: Props) => {
         // how much the asset will be sold for
         buyoutPricePerToken: "0.07",
       };
-      console.log();
-
       const tx = await (await marketPlaceContract)!.direct.createListing(
         listing
       );
@@ -139,7 +136,7 @@ const Purchase = ({ selectedNft, isOwner, isListed, marketNft }: Props) => {
       successMsg("Listing successful!");
       setLoading(false);
     } catch (err) {
-      if (err?.message.includes("is no longer valid")) {
+      if (err instanceof Error && err.message.includes("is no longer valid")) {
         errorMsg("Listing is no longer valid");
       } else {
         errorMsg();
