@@ -4,13 +4,18 @@ import { RiShareBoxLine } from "react-icons/ri";
 import { FiMoreVertical } from "react-icons/fi";
 import { GiShare } from "react-icons/gi";
 import { NFTProps } from "../../types";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
-type Props = {};
+type Props = {
+  selectedNft: NFTProps["selectedNft"];
+  isOwner: Boolean;
+};
 
 const style = {
   wrapper: `flex`,
   infoContainer: `h-36 flex flex-col flex-1 justify-between mb-6`,
-  accent: `text-[#2081e2]`,
+  accent: `text-[#2081e2] text-lg`,
   nftTitle: `text-3xl font-extrabold`,
   otherInfo: `flex`,
   ownedBy: `text-[#8a939b] mr-4`,
@@ -22,15 +27,27 @@ const style = {
   divider: `border-r-2`,
 };
 
-const GenralDetails = ({ selectedNft }: NFTProps) => {
+const GenralDetails = ({ selectedNft, isOwner }: Props) => {
+  const router = useRouter();
   return (
     <div className={style.wrapper}>
       <div className={style.infoContainer}>
-        <div className={style.accent}>Bored Ape Yacht Club</div>
+        <div className={style.accent}>
+          <button
+            onClick={() => {
+              router.back();
+            }}
+          >
+            Bored Ape Yacht Club
+          </button>
+        </div>
         <div className={style.nftTitle}>{selectedNft?.metadata.name}</div>
         <div className={style.otherInfo}>
           <div className={style.ownedBy}>
-            Owned by <span className={style.accent}>e88vault</span>
+            Owned by{" "}
+            <span className={style.accent + "text-sm"}>
+              {!isOwner ? selectedNft?.owner?.slice(2, 8).toUpperCase() : "You"}
+            </span>
           </div>
           <div className={style.likes}>
             <AiFillHeart className={style.likeIcon} /> 2.3K favorites

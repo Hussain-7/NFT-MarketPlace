@@ -52,7 +52,7 @@ const Header = () => {
           <div className={style.headerItem}> Collections </div>
         </Link>
         {/* <div className={style.headerItem}> Stats </div> */}
-        {/* <div className={style.headerItem}> Resources </div> */}
+        <div className={style.headerItem}> My assets </div>
         <div className={style.headerItem}> Create </div>
         <div className={style.headerIcon}>
           <CgProfile onClick={Logout} />

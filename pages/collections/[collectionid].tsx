@@ -52,7 +52,7 @@ const CollectionId = () => {
   const router = useRouter();
   const { collectionid } = router.query;
   console.log(collectionid);
-
+  const [owners, setOwners] = useState<string[]>([]);
   const [collection, setCollection] = useState<collectionType>({
     imageUrl: "https://via.placeholder.com/200",
     bannerImageUrl: "https://via.placeholder.com/200",
@@ -68,6 +68,13 @@ const CollectionId = () => {
 
   const { nfts, listings, nftsLoaded, activeListingsLoaded } =
     useContext(MarketPlaceContext);
+  useEffect(() => {
+    // finds unique owners count from list of nfts
+    const uniqueOwners = nfts
+      .map((nft) => nft.owner)
+      .filter((value, index, self) => self.indexOf(value) === index);
+    setOwners(uniqueOwners);
+  }, [nfts]);
   const fetchCollectionData = useCallback(
     async (sanityClient = client) => {
       const query = `*[_type == "marketItems" && contractAddress == "${collectionid}" ] {
@@ -161,7 +168,8 @@ const CollectionId = () => {
             </div>
             <div className={style.collectionStat}>
               <div className={style.statValue}>
-                {collection?.allOwners ? collection.allOwners.length : ""}
+                {/* {collection?.allOwners ? collection.allOwners.length : ""} */}
+                {owners ? owners.length : ""}
               </div>
               <div className={style.statName}>owners</div>
             </div>

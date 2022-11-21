@@ -7,25 +7,46 @@ import Purchase from "../../components/nfts/Purchase";
 import NFTImage from "../../components/nfts/NFTImage";
 import { MarketPlaceContext } from "../../context/MarketPlace";
 import { NFT } from "../../types";
+import { useAddress } from "@thirdweb-dev/react";
 
 const style = {
   wrapper: `flex flex-col items-center container-lg text-[#e5e8eb]`,
   container: `container p-6`,
-  topContent: `flex flex-col space-y-8 md:flex-row md:space-y-0`,
+  topContent: `flex flex-col space-y-8 md:flex-row md:space-y-0 items-center`,
   nftImgContainer: `flex-1 mr-4`,
   detailsContainer: `flex-[2] ml-4`,
 };
 
 const NFTItem = () => {
   const router = useRouter();
+  const { nftid } = router.query;
+  const address = useAddress();
   const { nfts, listings } = useContext(MarketPlaceContext);
+  const [isOwner, setIsOwner] = useState(false);
   const [selectedNft, setSelectedNft] = useState<any>(null);
+  const [marketNft, setMarketNft] = useState<any>(null);
   useEffect(() => {
-    console.log("nfts in NFTItem", nfts);
-    if (nfts.length == 0) return;
-    const nft = nfts.find((nft: NFT) => nft.metadata.id === router.query.nftid);
+    if (listings.length === 0 || !nftid || !selectedNft) return;
+    (async () => {
+      console.log("selectedNft in purchase:", selectedNft);
+      console.log("listings in purchase", listings);
+      const marketNftVal = listings.find(
+        (marketNft) => marketNft?.asset.id === selectedNft?.metadata?.id
+      );
+      console.log("marketNftVal", marketNftVal);
+      setMarketNft(marketNftVal);
+    })();
+  }, [selectedNft, listings, nftid]);
+  useEffect(() => {
+    // set is owner
+    if (address && selectedNft?.owner === address) {
+      setIsOwner(true);
+    }
+  }, [address, selectedNft]);
+  useEffect(() => {
+    if (nfts.length === 0) return;
+    const nft = nfts.find((nft: NFT) => nft.metadata.id == router.query.nftid);
     setSelectedNft(nft);
-    console.log("selectedNft", selectedNft);
   }, [nfts]);
 
   return (
@@ -38,10 +59,12 @@ const NFTItem = () => {
               <NFTImage selectedNft={selectedNft} />
             </div>
             <div className={style.detailsContainer}>
-              <GenralDetails selectedNft={selectedNft} />
+              <GenralDetails selectedNft={selectedNft} isOwner={isOwner} />
               <Purchase
                 isListed={router?.query?.isListed}
+                isOwner={isOwner}
                 selectedNft={selectedNft}
+                marketNft={marketNft}
                 listings={listings}
               />
             </div>
