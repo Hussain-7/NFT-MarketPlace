@@ -24,41 +24,41 @@ export const MarketPlaceProvider = ({ children }: Props) => {
   const [listings, setListings] = useState<Array<Listing>>([]);
   const [nftsLoaded, setNftsLoaded] = useState(false);
   const [activeListingsLoaded, setActiveListingsLoaded] = useState(false);
-  const { contract: marketPlaceContract } = useContract(
-    "0xFE64BFAC909d23027691074E833DcB29a3233523",
-    "marketplace"
-  );
-  const { contract: nftContract } = useContract(
-    "0x97c4ffB08C8438e671951Ae957Dc77c1f0777D75",
-    "nft-collection"
-  );
+  // const { contract: marketPlaceContract } = useContract(
+  //   "0xFE64BFAC909d23027691074E833DcB29a3233523",
+  //   "marketplace"
+  // );
+  // const { contract: nftContract } = useContract(
+  //   "0x97c4ffB08C8438e671951Ae957Dc77c1f0777D75",
+  //   "nft-collection"
+  // );
 
-  // const nftContract = useMemo(() => {
-  //   const sdk = new ThirdwebSDK(
-  //     "https://eth-goerli.g.alchemy.com/v2/sJeqdSsAWetNNKmR__bWMkAXzcmh6a98"
-  //   );
-  //   return sdk.getContract(
-  //     "0x97c4ffB08C8438e671951Ae957Dc77c1f0777D75",
-  //     "nft-collection"
-  //   );
-  // }, []);
+  const nftContract = useMemo(() => {
+    const sdk = new ThirdwebSDK(
+      "https://eth-goerli.g.alchemy.com/v2/sJeqdSsAWetNNKmR__bWMkAXzcmh6a98"
+    );
+    return sdk.getContract(
+      "0x97c4ffB08C8438e671951Ae957Dc77c1f0777D75",
+      "nft-collection"
+    );
+  }, []);
 
-  // const marketPlaceContract = useMemo(() => {
-  //   const sdk = new ThirdwebSDK(
-  //     "https://eth-goerli.g.alchemy.com/v2/sJeqdSsAWetNNKmR__bWMkAXzcmh6a98"
-  //   );
-  //   return sdk.getContract(
-  //     "0xFE64BFAC909d23027691074E833DcB29a3233523",
-  //     "marketplace"
-  //   );
-  // }, []);
+  const marketPlaceContract = useMemo(() => {
+    const sdk = new ThirdwebSDK(
+      "https://eth-goerli.g.alchemy.com/v2/sJeqdSsAWetNNKmR__bWMkAXzcmh6a98"
+    );
+    return sdk.getContract(
+      "0xFE64BFAC909d23027691074E833DcB29a3233523",
+      "marketplace"
+    );
+  }, []);
 
   // get all NFTs in the collection
   useEffect(() => {
     if (!nftContract) return;
     (async () => {
-      // const nfts = await (await nftContract)!.getAll();
-      const nfts = await nftContract!.getAll();
+      const nfts = await (await nftContract)!.getAll();
+      // const nfts = await nftContract!.getAll();
       // @ts-ignore
       setNfts(nfts);
       console.log("Context: nfts", nfts);
@@ -70,7 +70,8 @@ export const MarketPlaceProvider = ({ children }: Props) => {
   useEffect(() => {
     if (!marketPlaceContract) return;
     (async () => {
-      const listings = await marketPlaceContract!.getActiveListings();
+      const listings = await (await marketPlaceContract)!.getActiveListings();
+      // const listings = await marketPlaceContract!.getActiveListings();
       // @ts-ignore
       setListings(listings);
       setActiveListingsLoaded(true);
