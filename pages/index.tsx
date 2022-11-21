@@ -1,9 +1,4 @@
-import {
-  useAddress,
-  useUser,
-  useDisconnect,
-  useMetamask,
-} from "@thirdweb-dev/react";
+import { useAddress, useMetamask } from "@thirdweb-dev/react";
 
 import type { NextPage } from "next";
 import Head from "next/head";
@@ -14,6 +9,7 @@ import { useEffect, useState } from "react";
 import { client } from "../lib/sanityClient";
 import toast, { Toaster } from "react-hot-toast";
 import Loader from "../components/common/Loader";
+import { ethers } from "ethers";
 const style = {
   wrapper: ``,
   walletConnectWrapper: `flex flex-col justify-center items-center h-screen w-screen bg-[#3b3d42] `,
@@ -23,6 +19,7 @@ const style = {
 
 const Home: NextPage = () => {
   const connect = useMetamask();
+
   const address = useAddress();
   const [loading, setLoading] = useState(false);
   const logIn = () => {

@@ -1,10 +1,8 @@
-import { useUser } from "@thirdweb-dev/react";
+import { useSDK, useUser } from "@thirdweb-dev/react";
 import { ThirdwebSDK } from "@thirdweb-dev/sdk";
-import { providers } from "ethers";
 import { NextComponentType, NextPageContext } from "next";
 import { createContext, useState, useEffect, useMemo } from "react";
 import { ContextType, Listing, NFT } from "../types";
-
 // create a context for managing nfts and listings
 export const MarketPlaceContext = createContext<ContextType>({
   nfts: [],
@@ -27,8 +25,9 @@ export const MarketPlaceProvider = ({ children }: Props) => {
   const nftContract = useMemo(() => {
     const sdk = new ThirdwebSDK(
       "https://eth-goerli.g.alchemy.com/v2/sJeqdSsAWetNNKmR__bWMkAXzcmh6a98"
+      // "goerli"
     );
-    return sdk.getContract(
+    return sdk!.getContract(
       "0x97c4ffB08C8438e671951Ae957Dc77c1f0777D75",
       "nft-collection"
     );
@@ -37,8 +36,9 @@ export const MarketPlaceProvider = ({ children }: Props) => {
   const marketPlaceContract = useMemo(() => {
     const sdk = new ThirdwebSDK(
       "https://eth-goerli.g.alchemy.com/v2/sJeqdSsAWetNNKmR__bWMkAXzcmh6a98"
+      // "goerli"
     );
-    return sdk.getContract(
+    return sdk!.getContract(
       "0xFE64BFAC909d23027691074E833DcB29a3233523",
       "marketplace"
     );

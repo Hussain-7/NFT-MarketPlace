@@ -38,5 +38,3 @@ next-env.d.ts
 
 # lock files
 *.lock
-components/nfts/Purchase.tsx
-.env
