@@ -13,6 +13,7 @@ import {
 import { NATIVE_TOKEN_ADDRESS, ThirdwebSDK } from "@thirdweb-dev/sdk";
 import Loader from "../common/Loader";
 import { addresses } from "../../lib/constants";
+import Modal from "../common/Modal";
 
 const style = {
   button: `mr-8 justify-center flex items-center py-2 px-12 rounded-lg cursor-pointer w-full`,
@@ -26,9 +27,18 @@ type Props = {
   isOwner: boolean;
   isListed: string | string[] | undefined;
   marketNft: Listing;
+  toggleShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+  toggleModalLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const Purchase = ({ selectedNft, isOwner, isListed, marketNft }: Props) => {
+const Trade = ({
+  selectedNft,
+  isOwner,
+  isListed,
+  marketNft,
+  toggleShowModal,
+  toggleModalLoading,
+}: Props) => {
   const signer = useSigner();
   const [enableButton, setEnableButton] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -92,9 +102,9 @@ const Purchase = ({ selectedNft, isOwner, isListed, marketNft }: Props) => {
       setLoading(false);
     } catch (err) {
       if (err instanceof Error && err.message.includes("is no longer valid")) {
-        errorMsg("Listing is no longer valid");
+        errorMsg("This NFT is no longer available!");
       } else {
-        errorMsg();
+        errorMsg("Payment Failed!");
       }
       setLoading(false);
     }
@@ -102,6 +112,7 @@ const Purchase = ({ selectedNft, isOwner, isListed, marketNft }: Props) => {
 
   const listItem = async () => {
     setLoading(true);
+    toggleShowModal(true);
     // Ensure user is on the correct network
     if (networkMismatch) {
       switchNetwork && switchNetwork(ChainId.Goerli);
@@ -139,7 +150,7 @@ const Purchase = ({ selectedNft, isOwner, isListed, marketNft }: Props) => {
       if (err instanceof Error && err.message.includes("is no longer valid")) {
         errorMsg("Listing is no longer valid");
       } else {
-        errorMsg();
+        errorMsg("Listing Failed!");
       }
       console.log(err);
       setLoading(false);
@@ -197,9 +208,7 @@ const Purchase = ({ selectedNft, isOwner, isListed, marketNft }: Props) => {
             className={`${style.button} bg-[#2081e2] hover:bg-[#42a0ff]`}
           >
             <IoMdWallet className={style.buttonIcon} />
-            <div className={style.buttonText}>
-              {loading ? <Loader text={"Listing..."} /> : "List Item"}
-            </div>
+            <div className={style.buttonText}>List Item</div>
           </div>
         ) : (
           <div
@@ -214,4 +223,4 @@ const Purchase = ({ selectedNft, isOwner, isListed, marketNft }: Props) => {
   );
 };
 
-export default Purchase;
+export default Trade;

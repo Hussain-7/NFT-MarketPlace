@@ -1,13 +1,15 @@
 import { useRouter } from "next/router";
+import { Modal } from "flowbite-react";
 import React, { useMemo, useState, useEffect, useContext } from "react";
 import Header from "../../components/common/Header";
 import GenralDetails from "../../components/nfts/GenralDetails";
 import ItemActivity from "../../components/nfts/ItemActivity";
-import Purchase from "../../components/nfts/Purchase";
 import NFTImage from "../../components/nfts/NFTImage";
+import Trade from "../../components/nfts/Trade";
 import { MarketPlaceContext } from "../../context/MarketPlace";
 import { NFT } from "../../types";
 import { useAddress } from "@thirdweb-dev/react";
+import CustomModal from "../../components/common/Modal";
 
 const style = {
   wrapper: `flex flex-col items-center container-lg text-[#e5e8eb]`,
@@ -25,6 +27,8 @@ const NFTItem = () => {
   const [isOwner, setIsOwner] = useState(false);
   const [selectedNft, setSelectedNft] = useState<any>(null);
   const [marketNft, setMarketNft] = useState<any>(null);
+  const [showModal, setShowModal] = useState(false);
+  const [modalLoading, setModalLoading] = useState(false);
   useEffect(() => {
     if (listings.length === 0 || !nftid || !selectedNft) return;
     (async () => {
@@ -52,6 +56,11 @@ const NFTItem = () => {
   return (
     <div>
       <Header />
+      <CustomModal
+        toggle={showModal}
+        loading={modalLoading}
+        toggleShowModal={setShowModal}
+      />
       <div className={style.wrapper}>
         <div className={style.container}>
           <div className={style.topContent}>
@@ -60,12 +69,14 @@ const NFTItem = () => {
             </div>
             <div className={style.detailsContainer}>
               <GenralDetails selectedNft={selectedNft} isOwner={isOwner} />
-              <Purchase
+              <Trade
                 isListed={router?.query?.isListed}
                 isOwner={isOwner}
                 selectedNft={selectedNft}
                 marketNft={marketNft}
                 listings={listings}
+                toggleShowModal={setShowModal}
+                toggleModalLoading={setModalLoading}
               />
             </div>
           </div>

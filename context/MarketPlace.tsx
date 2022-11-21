@@ -1,4 +1,4 @@
-import { useSDK, useUser } from "@thirdweb-dev/react";
+import { useAddress, useSDK, useUser } from "@thirdweb-dev/react";
 import { ThirdwebSDK } from "@thirdweb-dev/sdk";
 import { NextComponentType, NextPageContext } from "next";
 import { createContext, useState, useEffect, useMemo } from "react";
@@ -18,6 +18,7 @@ type Props = {
 };
 
 export const MarketPlaceProvider = ({ children }: Props) => {
+  const address = useAddress();
   const [nfts, setNfts] = useState<Array<NFT>>([]);
   const [listings, setListings] = useState<Array<Listing>>([]);
   const [nftsLoaded, setNftsLoaded] = useState(false);
@@ -54,7 +55,7 @@ export const MarketPlaceProvider = ({ children }: Props) => {
       console.log("Context: nfts", nfts);
       setNftsLoaded(true);
     })();
-  }, [nftContract]);
+  }, [nftContract, address]);
 
   // get all listings in the collection
   useEffect(() => {
@@ -66,7 +67,7 @@ export const MarketPlaceProvider = ({ children }: Props) => {
       setActiveListingsLoaded(true);
       console.log("Context: listings", listings);
     })();
-  }, [marketPlaceContract]);
+  }, [marketPlaceContract, address]);
 
   return (
     <MarketPlaceContext.Provider
