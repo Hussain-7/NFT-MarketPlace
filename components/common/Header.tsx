@@ -7,12 +7,13 @@ import {
   useMetamask,
 } from "@thirdweb-dev/react";
 import Link from "next/link";
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import logosvg from "../../assets/logo.svg";
 import { AiOutlineSearch } from "react-icons/ai";
 import { CgProfile } from "react-icons/cg";
 import { MdOutlineAccountBalanceWallet } from "react-icons/md";
 import { useRouter } from "next/router";
+import { MarketPlaceContext } from "../../context/MarketPlace";
 const style = {
   wrapper: `bg-[#04111d] w-[100%] px-[10%] py-[0.8rem] flex flex-col  items-center gap-y-5 lg:flex-row`,
   logoContainer: `flex items-center cursor-pointer mr-4`,
@@ -26,6 +27,7 @@ const style = {
 };
 const Header = () => {
   const router = useRouter();
+  const { user } = useContext(MarketPlaceContext);
   const disconnect = useDisconnect();
   const Logout = () => {
     disconnect();
@@ -52,7 +54,12 @@ const Header = () => {
           <div className={style.headerItem}> Collections </div>
         </Link>
         {/* <div className={style.headerItem}> Stats </div> */}
-        <div className={style.headerItem}> My assets </div>
+        {user.address && (
+          <Link href={`/profile/${user.address}`}>
+            <div className={style.headerItem}> My assets </div>
+          </Link>
+        )}
+
         <div className={style.headerItem}> Create </div>
         <div className={style.headerIcon}>
           <CgProfile onClick={Logout} />

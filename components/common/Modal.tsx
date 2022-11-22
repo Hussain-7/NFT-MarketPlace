@@ -6,13 +6,16 @@ type Props = {
   toggle: boolean;
   loading: boolean;
   toggleShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+  listItem: (price: number) => Promise<void>;
 };
 
 const CustomModal = ({
   toggle = true,
   loading = true,
   toggleShowModal,
+  listItem,
 }: Props) => {
+  const [price, setPrice] = React.useState<number>(0);
   return (
     <Modal show={toggle}>
       <div className="flex flex-col justify-center items-center p-10 space-y-4 w-full mx-auto">
@@ -44,7 +47,9 @@ const CustomModal = ({
           <div className="rounded-md flex space-x-4 border-2 border-blue-600 w-full">
             {" "}
             <input
-              type="text"
+              value={price}
+              onChange={(e) => setPrice(parseFloat(e.target.value))}
+              type="number"
               placeholder="Amout"
               className="p-4 flex-1 border-none outline-none hover:outline-none
 						focus:outline-none focus:ring-0  rounded-md"
@@ -62,6 +67,9 @@ const CustomModal = ({
         <button
           // Blue open sea type button
           className="bg-blue-600 text-white rounded-md p-4 w-full"
+          onClick={() => {
+            listItem(price);
+          }}
         >
           {loading ? <Loader text={"Listing..."} /> : " Complete listing"}
         </button>

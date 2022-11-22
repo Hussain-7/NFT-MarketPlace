@@ -29,7 +29,7 @@ const NFTImage = ({ selectedNft }: NFTProps) => {
       <div>
         <img
           src={selectedNft?.metadata.image}
-          className="w-[80%] mx-auto object-cover"
+          className="w-[70%] mx-auto object-cover"
         />
       </div>
     </div>

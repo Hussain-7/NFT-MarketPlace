@@ -1,5 +1,4 @@
 import { useRouter } from "next/router";
-import { Modal } from "flowbite-react";
 import React, { useMemo, useState, useEffect, useContext } from "react";
 import Header from "../../components/common/Header";
 import GenralDetails from "../../components/nfts/GenralDetails";
@@ -22,13 +21,12 @@ const style = {
 const NFTItem = () => {
   const router = useRouter();
   const { nftid } = router.query;
-  const address = useAddress();
-  const { nfts, listings } = useContext(MarketPlaceContext);
+
+  const { nfts, listings, user } = useContext(MarketPlaceContext);
   const [isOwner, setIsOwner] = useState(false);
   const [selectedNft, setSelectedNft] = useState<any>(null);
   const [marketNft, setMarketNft] = useState<any>(null);
-  const [showModal, setShowModal] = useState(false);
-  const [modalLoading, setModalLoading] = useState(false);
+
   useEffect(() => {
     if (listings.length === 0 || !nftid || !selectedNft) return;
     (async () => {
@@ -43,10 +41,11 @@ const NFTItem = () => {
   }, [selectedNft, listings, nftid]);
   useEffect(() => {
     // set is owner
-    if (address && selectedNft?.owner === address) {
+    console.log("address", user.address);
+    if (user.address && selectedNft?.owner === user.address) {
       setIsOwner(true);
     }
-  }, [address, selectedNft]);
+  }, [user.address, selectedNft]);
   useEffect(() => {
     if (nfts.length === 0) return;
     const nft = nfts.find((nft: NFT) => nft.metadata.id == router.query.nftid);
@@ -56,11 +55,6 @@ const NFTItem = () => {
   return (
     <div>
       <Header />
-      <CustomModal
-        toggle={showModal}
-        loading={modalLoading}
-        toggleShowModal={setShowModal}
-      />
       <div className={style.wrapper}>
         <div className={style.container}>
           <div className={style.topContent}>
@@ -75,8 +69,6 @@ const NFTItem = () => {
                 selectedNft={selectedNft}
                 marketNft={marketNft}
                 listings={listings}
-                toggleShowModal={setShowModal}
-                toggleModalLoading={setModalLoading}
               />
             </div>
           </div>

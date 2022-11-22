@@ -14,6 +14,7 @@ import { NATIVE_TOKEN_ADDRESS, ThirdwebSDK } from "@thirdweb-dev/sdk";
 import Loader from "../common/Loader";
 import { addresses } from "../../lib/constants";
 import Modal from "../common/Modal";
+import CustomModal from "../common/Modal";
 
 const style = {
   button: `mr-8 justify-center flex items-center py-2 px-12 rounded-lg cursor-pointer w-full`,
@@ -27,24 +28,19 @@ type Props = {
   isOwner: boolean;
   isListed: string | string[] | undefined;
   marketNft: Listing;
-  toggleShowModal: React.Dispatch<React.SetStateAction<boolean>>;
-  toggleModalLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const Trade = ({
-  selectedNft,
-  isOwner,
-  isListed,
-  marketNft,
-  toggleShowModal,
-  toggleModalLoading,
-}: Props) => {
+const Trade = ({ selectedNft, isOwner, isListed, marketNft }: Props) => {
   const signer = useSigner();
   const [enableButton, setEnableButton] = useState(false);
   const [loading, setLoading] = useState(false);
   const [, switchNetwork] = useNetwork();
+  const [showModal, setShowModal] = useState(false);
   const networkMismatch = useNetworkMismatch();
-
+  useEffect(() => {
+    console.log("isOwner", isOwner);
+    console.log("isListed", isListed);
+  });
   useEffect(() => {
     if (!marketNft || !selectedNft) return;
     setEnableButton(true);
@@ -110,9 +106,9 @@ const Trade = ({
     }
   };
 
-  const listItem = async () => {
+  const listItem = async (price: number) => {
     setLoading(true);
-    toggleShowModal(true);
+    setShowModal(true);
     // Ensure user is on the correct network
     if (networkMismatch) {
       switchNetwork && switchNetwork(ChainId.Goerli);
@@ -135,7 +131,7 @@ const Trade = ({
         // address of the currency contract that will be used to pay for the listing
         currencyContractAddress: NATIVE_TOKEN_ADDRESS,
         // how much the asset will be sold for
-        buyoutPricePerToken: "0.07",
+        buyoutPricePerToken: price,
       };
       const tx = await (await marketPlaceContract)!.direct.createListing(
         listing
@@ -146,6 +142,7 @@ const Trade = ({
       console.log("listingId", listingId);
       successMsg("Listing successful!");
       setLoading(false);
+      setShowModal(false);
     } catch (err) {
       if (err instanceof Error && err.message.includes("is no longer valid")) {
         errorMsg("Listing is no longer valid");
@@ -160,6 +157,12 @@ const Trade = ({
   return (
     <div className="flex flex-col space-y-2 justify-center items-left py-5 w-full items-left rounded-lg border border-[#151c22] bg-[#303339] px-12">
       <Toaster position="bottom-left" reverseOrder={false} />
+      <CustomModal
+        toggle={showModal}
+        loading={loading}
+        toggleShowModal={setShowModal}
+        listItem={listItem}
+      />
       {isListed === "true" && (
         <>
           <div className="text-[#8a939b] text-lg font-normal mt-0">
@@ -203,7 +206,7 @@ const Trade = ({
         ) : isOwner === true ? (
           <div
             onClick={() => {
-              loading ? null : listItem();
+              setShowModal(true);
             }}
             className={`${style.button} bg-[#2081e2] hover:bg-[#42a0ff]`}
           >

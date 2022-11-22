@@ -43,10 +43,15 @@ export type Listing = {
 };
 
 export type ContextType = {
+  user: {
+    address: string;
+  };
   nfts: Array<NFT>;
   listings: Array<Listing>;
+  userNfts: Array<NFT>;
   nftsLoaded: boolean;
   activeListingsLoaded: boolean;
+  userNftsLoaded: boolean;
   marketPlaceContract: Promise<Marketplace> | undefined;
   nftContract: Promise<NFTCollection> | undefined;
 };
