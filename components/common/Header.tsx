@@ -27,8 +27,12 @@ const style = {
 };
 const Header = () => {
   const router = useRouter();
+  const address = useAddress();
   const { user } = useContext(MarketPlaceContext);
   const disconnect = useDisconnect();
+  useEffect(() => {
+    if (!address) router.push("/", undefined, { shallow: true });
+  }, []);
   const Logout = () => {
     disconnect();
     router.push("/");

@@ -2,7 +2,14 @@ import { useAddress, useSDK, useUser } from "@thirdweb-dev/react";
 import { ThirdwebSDK } from "@thirdweb-dev/sdk";
 import { SocketAddress } from "net";
 import { NextComponentType, NextPageContext } from "next";
-import { createContext, useState, useEffect, useMemo } from "react";
+import {
+  createContext,
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+} from "react";
+import { useQuery } from "react-query";
 import { ContextType, Listing, NFT } from "../types";
 // create a context for managing nfts and listings
 export const MarketPlaceContext = createContext<ContextType>({
@@ -30,12 +37,12 @@ export const MarketPlaceProvider = ({ children }: Props) => {
   }>({
     address: "",
   });
-  const [nfts, setNfts] = useState<Array<NFT>>([]);
-  const [userNfts, setUserNfts] = useState<Array<NFT>>([]);
-  const [listings, setListings] = useState<Array<Listing>>([]);
-  const [nftsLoaded, setNftsLoaded] = useState(false);
-  const [userNftsLoaded, setUserNftsLoaded] = useState<boolean>(false);
-  const [activeListingsLoaded, setActiveListingsLoaded] = useState(false);
+  // const [nfts, setNfts] = useState<Array<NFT>>([]);
+  // const [userNfts, setUserNfts] = useState<Array<NFT>>([]);
+  // const [listings, setListings] = useState<Array<Listing>>([]);
+  // const [nftsLoaded, setNftsLoaded] = useState(false);
+  // const [userNftsLoaded, setUserNftsLoaded] = useState<boolean>(false);
+  // const [activeListingsLoaded, setActiveListingsLoaded] = useState(false);
   useEffect(() => {
     if (address) {
       setUser({
@@ -65,57 +72,91 @@ export const MarketPlaceProvider = ({ children }: Props) => {
     );
   }, []);
   // get all nfts owned by current user
-  useEffect(() => {
-    if (!nftContract || !user.address) return;
-    (async () => {
-      const nfts = await (await nftContract)!.getOwned(user.address);
-      // @ts-ignore
-      setUserNfts(nfts);
-      console.log("Context: user nfts", nfts);
-      setUserNftsLoaded(true);
-    })();
-  }, [nftContract, user.address]);
+  // useEffect(() => {
+  //   if (!nftContract || !user.address) return;
+  //   (async () => {
+  //     const nfts = await (await nftContract)!.getOwned(user.address);
+  //     // @ts-ignore
+  //     setUserNfts(nfts);
+  //     console.log("Context: user nfts", nfts);
+  //     setUserNftsLoaded(true);
+  //   })();
+  // }, [nftContract, user.address]);
 
   // get all NFTs in the collection
-  useEffect(() => {
-    if (!nftContract) return;
-    (async () => {
-      const nfts = await (await nftContract)!.getAll();
-      // @ts-ignore
-      setNfts(nfts);
-      console.log("Context: nfts", nfts);
-      setNftsLoaded(true);
-    })();
-  }, [nftContract, address]);
+  // useEffect(() => {
+  //   if (!nftContract) return;
+  //   (async () => {
+  //     const nfts = await (await nftContract)!.getAll();
+  //     // @ts-ignore
+  //     setNfts(nfts);
+  //     console.log("Context: nfts", nfts);
+  //     setNftsLoaded(true);
+  //   })();
+  // }, [nftContract, address]);
 
   // get all listings in the collection
-  useEffect(() => {
-    if (!marketPlaceContract) return;
-    (async () => {
-      const listings = await (await marketPlaceContract)!.getActiveListings();
-      // @ts-ignore
-      setListings(listings);
-      setActiveListingsLoaded(true);
-      console.log("Context: listings", listings);
-    })();
+  // useEffect(() => {
+  //   if (!marketPlaceContract) return;
+  //   (async () => {
+  //     const listings = await (await marketPlaceContract)!.getActiveListings();
+  //     // @ts-ignore
+  //     setListings(listings);
+  //     setActiveListingsLoaded(true);
+  //     console.log("Context: listings", listings);
+  //   })();
+  // }, [marketPlaceContract, address]);
+
+  const getAllNfts = useCallback(async () => {
+    if (!nftContract) return [];
+    const nfts = await (await nftContract)!.getAll();
+    return nfts;
+    // @ts-ignore
+  }, [nftContract, address]);
+  const getUserNfts = useCallback(async () => {
+    if (!nftContract) return [];
+    const nfts = await (await nftContract)!.getOwned(user.address);
+    return nfts;
+    // @ts-ignore
+  }, [nftContract, user.address]);
+  const getActiveListings = useCallback(async () => {
+    if (!marketPlaceContract) return [];
+    const listings = await (await marketPlaceContract)!.getActiveListings();
+    return listings;
   }, [marketPlaceContract, address]);
 
+  const {
+    data: nfts,
+    error: nftsLoadingError,
+    isLoading: nftsLoaded,
+  } = useQuery("getAllNfts", getAllNfts);
+  const {
+    data: userNfts,
+    error: userNftsError,
+    isLoading: userNftsLoaded,
+  } = useQuery("getUserNfts", getUserNfts);
+  const {
+    data: listings,
+    error: activeListingsErrors,
+    isLoading: activeListingsLoaded,
+  } = useQuery("getActiveListings", getActiveListings);
+
   // get all events from marketplace contract
-  useEffect(() => {
-    if (!marketPlaceContract) return;
-    (async () => {
-      const newSales = await (await marketPlaceContract)!.events.getEvents(
-        "NewSale",
-        {}
-      );
-      const listingAdded = await (await marketPlaceContract)!.events.getEvents(
-        "ListingAdded",
-        {}
-      );
-      console.log("Context: events newSales", newSales);
-      console.log("Context: events listingAdded", listingAdded);
-    })();
-  }, [marketPlaceContract, address]);
+  // useEffect(() => {
+  //   if (!marketPlaceContract) return;
+  //   (async () => {
+  //     const newSales = await (await marketPlaceContract)!.events.getEvents(
+  //       "NewSale",
+  //       {}
+  //     );
+  //     const listingAdded = await (await marketPlaceContract)!.events.getEvents(
+  //       "ListingAdded",
+  //       {}
+  //     );
+  //     console.log("Context: events newSales", newSales);
+  //     console.log("Context: events listingAdded", listingAdded);
+  //   })();
+  // }, [marketPlaceContract, address]);
 
   return (
     <MarketPlaceContext.Provider
