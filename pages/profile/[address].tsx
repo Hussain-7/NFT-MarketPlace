@@ -14,6 +14,7 @@ import { HiDotsVertical } from "react-icons/hi";
 import NFTCard from "../../components/collections/NFTCard";
 import Loader from "../../components/common/Loader";
 import { MarketPlaceContext } from "../../context/MarketPlace";
+import Link from "next/link";
 
 const style = {
   bannerImageContainer: ` lg:h-[20rem] w-screen overflow-hidden flex justify-center items-center`,
@@ -182,15 +183,31 @@ const Profile = () => {
         </div>
       </div>
       {userNftsLoaded ? (
-        <div className="my-[3rem] grid justify-center items-center grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-          {userNfts?.map((nftItem, id) => (
-            <NFTCard
-              key={id}
-              nftItem={nftItem}
-              title={collection?.title}
-              listings={listings}
-            />
-          ))}
+        <div>
+          {userNfts!?.length > 0 && (
+            <div className="my-[3rem] grid justify-center items-center grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+              {userNfts?.map((nftItem, id) => (
+                <NFTCard
+                  key={id}
+                  nftItem={nftItem}
+                  title={collection?.title}
+                  listings={listings}
+                />
+              ))}
+            </div>
+          )}
+          {userNfts!?.length == 0 && (
+            <div className="text-3xl text-center text-white h-[50%]">
+              No NFTs owned
+              {/* button to collections */}
+              <Link
+                href="/collections/0x97c4ffB08C8438e671951Ae957Dc77c1f0777D75"
+                className="text-[#2081e2] hover:text-[#2081e2] hover:underline pl-5 text-lg"
+              >
+                (Go to collections)
+              </Link>
+            </div>
+          )}
         </div>
       ) : (
         <div className="flex flex-row items-center justify-center my-[4rem] text-white animate-pulse">
