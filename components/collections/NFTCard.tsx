@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import Router from "next/router";
 import { BiHeart } from "react-icons/bi";
-import { Listing, NFT } from "../../types";
 import { HiTag } from "react-icons/hi";
+import { AuctionListing, DirectListing, NFT } from "@thirdweb-dev/sdk";
 
 type NFTCardProps = {
   nftItem: NFT;
   title: string;
-  listings: Array<Listing>;
+  listings: (AuctionListing | DirectListing)[] | undefined;
 };
 
 const style = {
@@ -33,7 +33,7 @@ const NFTCard = ({ nftItem, listings, title }: NFTCardProps) => {
   const [price, setPrice] = useState<string>("");
 
   useEffect(() => {
-    const listing = listings.find(
+    const listing = listings?.find(
       (listing) => listing.asset.id === nftItem.metadata.id
     );
     if (Boolean(listing)) {
@@ -53,11 +53,7 @@ const NFTCard = ({ nftItem, listings, title }: NFTCardProps) => {
       }}
     >
       <div className={style.imgContainer}>
-        <img
-          src={nftItem.metadata.image}
-          alt={nftItem.metadata.name}
-          className={style.nftImg}
-        />
+        <img src={nftItem.metadata.image || ""} className={style.nftImg} />
       </div>
       <div className={style.details}>
         <div className={style.info}>
@@ -81,12 +77,13 @@ const NFTCard = ({ nftItem, listings, title }: NFTCardProps) => {
         </div>
         <div className={isListed ? style.onSalelikes : style.likes}>
           {isListed && <HiTag />}
+
           <div className="flex items-center justify-center">
             {" "}
             <span className={style.likeIcon}>
               <BiHeart />
             </span>{" "}
-            {nftItem.metadata.likes || "34.3k"}
+            <> {nftItem.metadata.likes || "34.3k"}</>
           </div>
         </div>
       </div>

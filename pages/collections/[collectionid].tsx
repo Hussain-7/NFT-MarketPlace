@@ -14,7 +14,17 @@ import { HiDotsVertical } from "react-icons/hi";
 import NFTCard from "../../components/collections/NFTCard";
 import Loader from "../../components/common/Loader";
 import { MarketPlaceContext } from "../../context/MarketPlace";
-
+import {
+  useActiveListings,
+  useAddress,
+  useContract,
+  useListings,
+  useNFTs,
+  useOwnedNFTs,
+  useSDK,
+  useUser,
+} from "@thirdweb-dev/react";
+import { addresses } from "../../lib/constants";
 const style = {
   bannerImageContainer: ` lg:h-[20rem] w-screen overflow-hidden flex justify-center items-center`,
   bannerImage: `w-full object-cover`,
@@ -65,16 +75,26 @@ const CollectionId = () => {
     allOwners: [],
     description: "",
   });
-
+  // use activeListing hook from ThirdwebSDK
   const { nfts, listings, nftsLoaded, activeListingsLoaded } =
     useContext(MarketPlaceContext);
+  const [listedNfts, setListedNfts] = useState<any[]>([]);
   useEffect(() => {
     // finds unique owners count from list of nfts
-    const uniqueOwners = nfts
-      .map((nft) => nft.owner)
-      .filter((value, index, self) => self.indexOf(value) === index);
+    const uniqueOwners =
+      listings
+        ?.map((nft) => nft.sellerAddress)
+        .filter((value, index, self) => self.indexOf(value) === index) || [];
     setOwners(uniqueOwners);
-  }, [nfts]);
+    // finds all nfts if nft.metadata.id is present in listings.asset.id
+    // map all nfts to there ids
+    const listedNfts = nfts?.filter((nft) =>
+      listings?.find((listing) => listing.asset.id === nft.metadata.id)
+    );
+    if (listedNfts) {
+      setListedNfts(listedNfts);
+    }
+  }, [listings, nfts]);
   const fetchCollectionData = useCallback(
     async (sanityClient = client) => {
       const query = `*[_type == "marketItems" && contractAddress == "${collectionid}" ] {
@@ -163,7 +183,7 @@ const CollectionId = () => {
         <div className={style.midRow}>
           <div className={style.statsContainer}>
             <div className={style.collectionStat}>
-              <div className={style.statValue}>{nfts.length}</div>
+              <div className={style.statValue}>{listedNfts?.length || 0}</div>
               <div className={style.statName}>items</div>
             </div>
             <div className={style.collectionStat}>
@@ -203,14 +223,15 @@ const CollectionId = () => {
       </div>
       {nftsLoaded && activeListingsLoaded ? (
         <div className="my-[3rem] grid justify-center items-center grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-          {nfts.map((nftItem, id) => (
-            <NFTCard
-              key={id}
-              nftItem={nftItem}
-              title={collection?.title}
-              listings={listings}
-            />
-          ))}
+          {nfts!.length > 0 &&
+            listedNfts?.map((nftItem, id) => (
+              <NFTCard
+                key={id}
+                nftItem={nftItem}
+                title={collection?.title}
+                listings={listings}
+              />
+            ))}
         </div>
       ) : (
         <div className="flex flex-row items-center justify-center my-[4rem] text-white animate-pulse">

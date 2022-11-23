@@ -28,7 +28,7 @@ const style = {
   socialIcon: `my-2`,
   divider: `border-r-2`,
   title: `text-3xl lg:text-5xl font-bold mb-4`,
-  createdBy: `text-lg mb-4`,
+  createdBy: `text-xl mb-4 flex flex-col space-x-3`,
   statsContainer: `w-[80%] gap-5 md:w-[65%] flex flex-col md:flex-row items-center justify-center md:justify-between py-4 border border-[#151b22] rounded-xl mb-4`,
   collectionStat: `w-1/4`,
   statValue: `text-3xl font-bold w-full flex items-center justify-center`,
@@ -54,8 +54,9 @@ const Profile = () => {
   console.log(address);
   const [owners, setOwners] = useState<string[]>([]);
   const [collection, setCollection] = useState<collectionType>({
-    imageUrl: "https://via.placeholder.com/200",
-    bannerImageUrl: "https://via.placeholder.com/200",
+    imageUrl: "https://avatars.githubusercontent.com/u/39308600?v=4",
+    bannerImageUrl:
+      "https://home.kpmg/content/dam/kpmg/xx/images/2022/03/person-using-vr-banner.jpg",
     volumeTraded: 0,
     createdBy: 0,
     contractAddress: "",
@@ -66,35 +67,13 @@ const Profile = () => {
     description: "",
   });
 
-  const { userNfts, userNftsLoaded, listings, activeListingsLoaded } =
-    useContext(MarketPlaceContext);
-
-  // const fetchUserData = useCallback(
-  //   async (sanityClient = client) => {
-  //     const query = `*[_type == "marketItems" && contractAddress == "${address}" ] {
-  //       "imageUrl": profileImage.asset->url,
-  //       "bannerImageUrl": bannerImage.asset->url,
-  //       volumeTraded,
-  //       createdBy,
-  //       contractAddress,
-  //       "creator": createdBy->userName,
-  //       title, floorPrice,
-  //       "allOwners": owners[]->,
-  //       description
-  //   }`;
-  //     const collectionData = await sanityClient.fetch(query);
-  //     // the query returns 1 object inside of an array
-  //     setCollection(collectionData[0]);
-  //     console.log("collectionData", collectionData);
-  //   },
-  //   [address]
-  // );
-
-  // useEffect(() => {
-  //   if (!address) return;
-  //   console.log("collectionid", address);
-  //   fetchUserData();
-  // }, [address]);
+  const {
+    userNfts,
+    userNftsLoaded,
+    listings,
+    activeListingsLoaded,
+    userListings,
+  } = useContext(MarketPlaceContext);
 
   return (
     <div className="overflow-hidden">
@@ -146,26 +125,32 @@ const Profile = () => {
           </div>
         </div>
         <div className={style.midRow}>
-          <div className={style.title}>{collection?.title}</div>
-        </div>
-        <div className={style.midRow}>
           <div className={style.createdBy}>
-            <span className="text-[#2081e2]">
-              {address!?.slice(0, 6) + "..." + address!?.slice(-4)}
-            </span>
+            <div className="flex flex-row space-4 items-center justif">
+              {" "}
+              <span>
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Ethereum_logo_2014.svg/1257px-Ethereum_logo_2014.svg.png"
+                  alt="eth"
+                  className={style.ethLogo}
+                />
+              </span>
+              <span className="text-[#2081e2]">
+                {address!?.slice(0, 6) + "..." + address!?.slice(-4)}
+              </span>
+            </div>
+
+            <span className="text-[#788897]">Joined May 2022</span>
           </div>
         </div>
         <div className={style.midRow}>
           <div className={style.statsContainer}>
             <div className={style.collectionStat}>
-              <div className={style.statValue}>{userNfts.length}</div>
+              <div className={style.statValue}>{userNfts?.length || 0}</div>
               <div className={style.statName}>Nfts Owned</div>
             </div>
             <div className={style.collectionStat}>
-              <div className={style.statValue}>
-                {/* {collection?.allOwners ? collection.allOwners.length : ""} */}
-                {owners ? owners.length : ""}
-              </div>
+              <div className={style.statValue}>{userListings?.length || 0}</div>
               <div className={style.statName}>NFTS Listed</div>
             </div>
             <div className={style.collectionStat}>
@@ -186,7 +171,7 @@ const Profile = () => {
                   alt="eth"
                   className={style.ethLogo}
                 />
-                {collection?.volumeTraded}.5K
+                {collection?.volumeTraded}
               </div>
               <div className={style.statName}>volume traded</div>
             </div>
@@ -198,7 +183,7 @@ const Profile = () => {
       </div>
       {userNftsLoaded ? (
         <div className="my-[3rem] grid justify-center items-center grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-          {userNfts.map((nftItem, id) => (
+          {userNfts?.map((nftItem, id) => (
             <NFTCard
               key={id}
               nftItem={nftItem}

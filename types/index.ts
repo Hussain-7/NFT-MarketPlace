@@ -1,4 +1,10 @@
-import { Marketplace, NFTCollection } from "@thirdweb-dev/sdk";
+import {
+  AuctionListing,
+  DirectListing,
+  Marketplace,
+  NFT,
+  NFTCollection,
+} from "@thirdweb-dev/sdk";
 import { BigNumber } from "ethers";
 
 // For general use case
@@ -15,45 +21,44 @@ export type NFT_METADATA = {
   external_url: string;
   likes: number;
 };
-export type NFT = {
-  owner: string;
-  type: string;
-  supply: string;
-  metadata: NFT_METADATA;
-};
+// export type NFT = {
+//   owner: string;
+//   type: string;
+//   supply: string;
+//   metadata: NFT_METADATA;
+// };
 
-export type Listing = {
-  id: string;
-  asset: NFT_METADATA;
-  assetContractAddress: string;
-  buyoutCurrencyValuePerToken: {
-    name: string;
-    symbol: string;
-    decimals: number;
-    value: string;
-    displayValue: string;
-  };
-  currencyBuyoutPrice: BigNumber;
-  buyoutPrice: BigNumber;
-  quanitiy: BigNumber;
-  secondsUnitilEnd: BigNumber;
-  sellerAddress: string;
-  startTimeInSeconds: BigNumber;
-  tokenId: BigNumber;
-};
+// export type Listing = {
+//   id: string;
+//   asset: NFT_METADATA;
+//   assetContractAddress: string;
+//   buyoutCurrencyValuePerToken: {
+//     name: string;
+//     symbol: string;
+//     decimals: number;
+//     value: string;
+//     displayValue: string;
+//   };
+//   currencyBuyoutPrice: BigNumber;
+//   buyoutPrice: BigNumber;
+//   quanitiy: BigNumber;
+//   secondsUnitilEnd: BigNumber;
+//   sellerAddress: string;
+//   startTimeInSeconds: BigNumber;
+//   tokenId: BigNumber;
+// };
 
 export type ContextType = {
   user: {
     address: string;
   };
-  nfts: Array<NFT>;
-  listings: Array<Listing>;
-  userNfts: Array<NFT>;
+  nfts: NFT[] | undefined;
+  listings: (AuctionListing | DirectListing)[] | undefined;
+  userListings: (AuctionListing | DirectListing)[] | undefined;
+  userNfts: NFT[] | undefined;
   nftsLoaded: boolean;
   activeListingsLoaded: boolean;
   userNftsLoaded: boolean;
-  marketPlaceContract: Promise<Marketplace> | undefined;
-  nftContract: Promise<NFTCollection> | undefined;
 };
 
 export type NFTProps = {
