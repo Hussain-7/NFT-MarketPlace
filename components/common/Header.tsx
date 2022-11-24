@@ -33,9 +33,9 @@ const Header = () => {
   const { user } = useContext(MarketPlaceContext);
   const [showMenu, setShowMenu] = useState(false);
   const disconnect = useDisconnect();
-  useEffect(() => {
-    if (!address) router.push("/", undefined, { shallow: true });
-  }, []);
+  // useEffect(() => {
+  //   if (!address) router.push("/", undefined, { shallow: true });
+  // }, []);
   const Logout = () => {
     disconnect();
     router.push("/");
@@ -60,7 +60,9 @@ const Header = () => {
         <Link href="/collections/0x97c4ffB08C8438e671951Ae957Dc77c1f0777D75">
           <div className={style.headerItem}> Collections </div>
         </Link>
-        <div className={style.headerItem}> Create </div>
+        <Link href="/create">
+          <div className={style.headerItem}> Create </div>
+        </Link>
         {/* {user.address && (
           <Link href={`/profile/${user.address}`}>
             <div className={style.headerItem}> My assets </div>
