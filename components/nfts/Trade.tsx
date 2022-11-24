@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useContext, useMemo } from "react";
 
-import { Listing, NFT } from "../../types";
 import { HiTag } from "react-icons/hi";
 import { IoMdWallet } from "react-icons/io";
 import toast, { Toaster } from "react-hot-toast";
@@ -10,7 +9,13 @@ import {
   useNetworkMismatch,
   useSigner,
 } from "@thirdweb-dev/react";
-import { NATIVE_TOKEN_ADDRESS, ThirdwebSDK } from "@thirdweb-dev/sdk";
+import {
+  AuctionListing,
+  DirectListing,
+  NATIVE_TOKEN_ADDRESS,
+  NFT,
+  ThirdwebSDK,
+} from "@thirdweb-dev/sdk";
 import Loader from "../common/Loader";
 import { addresses } from "../../lib/constants";
 import Modal from "../common/Modal";
@@ -23,11 +28,11 @@ const style = {
 };
 
 type Props = {
-  listings: Array<Listing>;
+  listings: (AuctionListing | DirectListing)[] | undefined;
   selectedNft: NFT;
   isOwner: boolean;
   isListed: string | string[] | undefined;
-  marketNft: Listing;
+  marketNft: (AuctionListing | DirectListing) | undefined;
 };
 
 const Trade = ({ selectedNft, isOwner, isListed, marketNft }: Props) => {
@@ -186,7 +191,7 @@ const Trade = ({ selectedNft, isOwner, isListed, marketNft }: Props) => {
               <div
                 onClick={() => {
                   enableButton && !isOwner && !loading
-                    ? buyItem(marketNft.id, 1)
+                    ? buyItem(marketNft!.id, 1)
                     : null;
                 }}
                 className={`${style.button} bg-[#2081e2] hover:bg-[#42a0ff]`}

@@ -62,7 +62,9 @@ const CustomModal = ({
               <option value="FUSD">ETH</option>
             </select>
           </div>
-          <div className="text-gray-600 text-md font-normal">$0.00 Total</div>
+          <div className="text-gray-600 text-md font-normal">
+            ${price > 0 ? price * 1100 : 0} Total
+          </div>
         </div>
         <button
           // Blue open sea type button

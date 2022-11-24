@@ -1,9 +1,22 @@
-import { useAddress, useSDK, useUser } from "@thirdweb-dev/react";
+import {
+  useAddress,
+  useContract,
+  useListings,
+  useSDK,
+  useUser,
+} from "@thirdweb-dev/react";
 import { ThirdwebSDK } from "@thirdweb-dev/sdk";
 import { SocketAddress } from "net";
 import { NextComponentType, NextPageContext } from "next";
-import { createContext, useState, useEffect, useMemo } from "react";
-import { ContextType, Listing, NFT } from "../types";
+import {
+  createContext,
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+} from "react";
+import { useQuery } from "react-query";
+import { ContextType } from "../types";
 // create a context for managing nfts and listings
 export const MarketPlaceContext = createContext<ContextType>({
   user: {
@@ -12,11 +25,10 @@ export const MarketPlaceContext = createContext<ContextType>({
   nfts: [],
   listings: [],
   userNfts: [],
+  userListings: [],
   nftsLoaded: false,
   activeListingsLoaded: false,
   userNftsLoaded: false,
-  marketPlaceContract: undefined,
-  nftContract: undefined,
 });
 
 type Props = {
@@ -30,12 +42,7 @@ export const MarketPlaceProvider = ({ children }: Props) => {
   }>({
     address: "",
   });
-  const [nfts, setNfts] = useState<Array<NFT>>([]);
-  const [userNfts, setUserNfts] = useState<Array<NFT>>([]);
-  const [listings, setListings] = useState<Array<Listing>>([]);
-  const [nftsLoaded, setNftsLoaded] = useState(false);
-  const [userNftsLoaded, setUserNftsLoaded] = useState<boolean>(false);
-  const [activeListingsLoaded, setActiveListingsLoaded] = useState(false);
+  const [userListings, setUserListings] = useState<any[]>([]);
   useEffect(() => {
     if (address) {
       setUser({
@@ -54,69 +61,68 @@ export const MarketPlaceProvider = ({ children }: Props) => {
     );
   }, []);
 
-  const marketPlaceContract = useMemo(() => {
+  // function with takes in a promise and returns a value object
+
+  const marketPlaceContract = useMemo(async () => {
     const sdk = new ThirdwebSDK(
       "https://eth-goerli.g.alchemy.com/v2/sJeqdSsAWetNNKmR__bWMkAXzcmh6a98"
       // "goerli"
     );
-    return sdk!.getContract(
+    const contract = await sdk!.getContract(
       "0xFE64BFAC909d23027691074E833DcB29a3233523",
       "marketplace"
     );
+    return contract;
   }, []);
-  // get all nfts owned by current user
-  useEffect(() => {
-    if (!nftContract || !user.address) return;
-    (async () => {
-      const nfts = await (await nftContract)!.getOwned(user.address);
-      // @ts-ignore
-      setUserNfts(nfts);
-      console.log("Context: user nfts", nfts);
-      setUserNftsLoaded(true);
-    })();
-  }, [nftContract, user.address]);
 
-  // get all NFTs in the collection
-  useEffect(() => {
-    if (!nftContract) return;
-    (async () => {
-      const nfts = await (await nftContract)!.getAll();
-      // @ts-ignore
-      setNfts(nfts);
-      console.log("Context: nfts", nfts);
-      setNftsLoaded(true);
-    })();
+  const getAllNfts = useCallback(async () => {
+    return await (await nftContract)!.getAll();
+    // @ts-ignore
   }, [nftContract, address]);
-
-  // get all listings in the collection
-  useEffect(() => {
-    if (!marketPlaceContract) return;
-    (async () => {
-      const listings = await (await marketPlaceContract)!.getActiveListings();
-      // @ts-ignore
-      setListings(listings);
-      setActiveListingsLoaded(true);
-      console.log("Context: listings", listings);
-    })();
+  const getUserNfts = useCallback(async () => {
+    return await (await nftContract)!.getOwned(address);
+    // @ts-ignore
+  }, [nftContract, address]);
+  const getActiveListings = useCallback(async () => {
+    return await (await marketPlaceContract)!.getActiveListings();
   }, [marketPlaceContract, address]);
 
-  // get all events from marketplace contract
+  const {
+    data: nfts,
+    error: nftsLoadingError,
+    isLoading: nftsLoaded,
+    refetch: refetchNfts,
+  } = useQuery("getAllNfts", getAllNfts);
+  const {
+    data: userNfts,
+    error: userNftsError,
+    isLoading: userNftsLoaded,
+    refetch: refetchUserNfts,
+  } = useQuery("getUserNfts", getUserNfts, {
+    enabled: !!address,
+  });
+  const {
+    data: listings,
+    error: activeListingsErrors,
+    isLoading: activeListingsLoaded,
+    refetch: refetchActiveListings,
+  } = useQuery("getActiveListings", getActiveListings);
   useEffect(() => {
-    if (!marketPlaceContract) return;
-    (async () => {
-      const newSales = await (await marketPlaceContract)!.events.getEvents(
-        "NewSale",
-        {}
+    // check if the user has any listings
+    if (listings && listings.length > 0 && address) {
+      const userListing = listings!.filter(
+        (l: any) => l.sellerAddress === address
       );
-      const listingAdded = await (await marketPlaceContract)!.events.getEvents(
-        "ListingAdded",
-        {}
-      );
-      console.log("Context: events newSales", newSales);
-      console.log("Context: events listingAdded", listingAdded);
-    })();
-  }, [marketPlaceContract, address]);
-
+      setUserListings(userListing);
+    }
+  }, [listings, address]);
+  useEffect(() => {
+    console.log("============================================================");
+    console.log("data", nfts, userNfts, userListings, listings);
+    console.log("isloaded", nftsLoaded, userNftsLoaded, activeListingsLoaded);
+    console.log("error", nftsLoadingError, userNftsError, activeListingsErrors);
+    console.log("============================================================");
+  }, [nfts, userNfts, listings]);
   return (
     <MarketPlaceContext.Provider
       value={{
@@ -124,11 +130,10 @@ export const MarketPlaceProvider = ({ children }: Props) => {
         nfts,
         listings,
         userNfts,
-        nftsLoaded,
-        activeListingsLoaded,
-        userNftsLoaded,
-        marketPlaceContract,
-        nftContract,
+        userListings,
+        nftsLoaded: !nftsLoaded,
+        activeListingsLoaded: !activeListingsLoaded,
+        userNftsLoaded: !userNftsLoaded,
       }}
     >
       {children}
