@@ -7,13 +7,15 @@ import {
   useMetamask,
 } from "@thirdweb-dev/react";
 import Link from "next/link";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import logosvg from "../../assets/logo.svg";
 import { AiOutlineSearch } from "react-icons/ai";
 import { CgProfile } from "react-icons/cg";
 import { MdOutlineAccountBalanceWallet } from "react-icons/md";
 import { useRouter } from "next/router";
 import { MarketPlaceContext } from "../../context/MarketPlace";
+import { BiLogOut, BiLogOutCircle, BiUser } from "react-icons/bi";
+
 const style = {
   wrapper: `bg-[#04111d] w-[100%] px-[10%] py-[0.8rem] flex flex-col  items-center gap-y-5 lg:flex-row`,
   logoContainer: `flex items-center cursor-pointer mr-4`,
@@ -29,6 +31,7 @@ const Header = () => {
   const router = useRouter();
   const address = useAddress();
   const { user } = useContext(MarketPlaceContext);
+  const [showMenu, setShowMenu] = useState(false);
   const disconnect = useDisconnect();
   useEffect(() => {
     if (!address) router.push("/", undefined, { shallow: true });
@@ -57,16 +60,64 @@ const Header = () => {
         <Link href="/collections/0x97c4ffB08C8438e671951Ae957Dc77c1f0777D75">
           <div className={style.headerItem}> Collections </div>
         </Link>
-        {/* <div className={style.headerItem}> Stats </div> */}
-        {user.address && (
+        <div className={style.headerItem}> Create </div>
+        {/* {user.address && (
           <Link href={`/profile/${user.address}`}>
             <div className={style.headerItem}> My assets </div>
           </Link>
-        )}
+        )} */}
 
-        <div className={style.headerItem}> Create </div>
-        <div className={style.headerIcon}>
-          <CgProfile onClick={Logout} />
+        <div
+          className={style.headerIcon}
+          onMouseOver={() => {
+            console.log("enter");
+            setShowMenu(true);
+          }}
+          // onMouseLeave={() => {
+          //   console.log("leave");
+          // }}
+          onMouseOut={() => {
+            console.log("out");
+            setShowMenu(false);
+          }}
+        >
+          {/* Create dropdown menu here */}
+          <CgProfile />
+
+          {showMenu && (
+            <div className="relative z-50">
+              <div className="absolute top-0 right-0">
+                <div
+                  id="dropdown"
+                  className="z-1000 w-44 bg-[#04111d] text-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700"
+                >
+                  <ul
+                    className="py-1 text-sm text-white dark:text-gray-200"
+                    aria-labelledby="dropdownDefault"
+                  >
+                    <li>
+                      <Link
+                        href={`/profile/${user.address}`}
+                        className="py-2 px-4 hover:bg-[#1b2e41] dark:hover:bg-gray-600 dark:hover:text-white flex flex-row items-center justify-start"
+                      >
+                        <BiUser fontSize={20} className="mr-3" />{" "}
+                        <span>View Profile</span>
+                      </Link>
+                    </li>
+                    <li>
+                      <button
+                        onClick={Logout}
+                        className="w-full text-left py-2 px-4 hover:bg-[#1b2e41] dark:hover:bg-gray-600 dark:hover:text-white flex flex-row items-center justify-start"
+                      >
+                        <BiLogOut fontSize={20} className="mr-3" />
+                        <span>Logout</span>
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
         <div className={style.headerIcon}>
           <MdOutlineAccountBalanceWallet />
