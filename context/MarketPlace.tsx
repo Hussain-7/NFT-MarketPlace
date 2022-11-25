@@ -70,18 +70,18 @@ export const MarketPlaceProvider = ({ children }: Props) => {
   }, []);
 
   const getAllNfts = useCallback(async () => {
-    return [];
-    // return await (await nftContract)!.getAll();
+    // return [];
+    return await (await nftContract)!.getAll();
     // @ts-ignore
   }, [nftContract, address]);
   const getUserNfts = useCallback(async () => {
-    return [];
-    // return await (await nftContract)!.getOwned(address);
+    // return [];
+    return await (await nftContract)!.getOwned(address);
     // @ts-ignore
   }, [nftContract, address]);
   const getActiveListings = useCallback(async () => {
-    return [];
-    // return await (await marketPlaceContract)!.getActiveListings();
+    // return [];
+    return await (await marketPlaceContract)!.getActiveListings();
   }, [marketPlaceContract, address]);
 
   const {

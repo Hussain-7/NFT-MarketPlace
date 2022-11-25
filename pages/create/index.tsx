@@ -1,7 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
+import { ThirdwebSDK } from "@thirdweb-dev/sdk";
+import { addresses } from "../../lib/constants";
+
 import { BiImage } from "react-icons/bi";
 import Header from "../../components/common/Header";
-
+import { useForm, SubmitHandler } from "react-hook-form";
+import Loader from "../../components/common/Loader";
+import { MdSettingsInputAntenna } from "react-icons/md";
+import fs from "fs";
+import { useAddress, useSigner } from "@thirdweb-dev/react";
+import { InputType } from "zlib";
+type Inputs = {
+  name: string;
+  description: string;
+  image: File;
+};
 type Props = {};
 const styles = {
   label:
@@ -13,7 +26,25 @@ const styles = {
 };
 
 const index = (props: Props) => {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<Inputs>();
+
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    setIsLoading(true);
+    await mintNft(data);
+    setIsLoading(false);
+
+    console.log(data);
+  };
+  const address = useAddress();
+  const signer = useSigner();
   const [selectedFile, setSelectedFile] = useState();
+  const [fileBuffer, setFileBuffer] = useState<string | ArrayBuffer | null>();
+  const [isLoading, setIsLoading] = useState(false);
   const [preview, setPreview] = useState<string | undefined>();
   useEffect(() => {
     if (!selectedFile) {
@@ -33,9 +64,50 @@ const index = (props: Props) => {
       setSelectedFile(undefined);
       return;
     }
-
     // I've kept this example simple by using the first image instead of multiple
-    setSelectedFile(e.target.files[0]);
+    console.log("e.target.files", e.target.files[0]);
+    const file = e.target.files[0];
+    const reader = new window.FileReader();
+    reader.readAsArrayBuffer(file);
+    reader.onloadend = () => {
+      setSelectedFile(file);
+      setFileBuffer(reader.result);
+    };
+    // setSelectedFile(e.target.files[0]);
+  };
+  const NFTContract = useMemo(() => {
+    if (!signer) return;
+    const sdk = new ThirdwebSDK(
+      signer,
+      // @ts-ignore
+      "https://eth-goerli.g.alchemy.com/v2/sJeqdSsAWetNNKmR__bWMkAXzcmh6a98"
+      // "goerli"
+    );
+    return sdk!.getContract(
+      "0x97c4ffB08C8438e671951Ae957Dc77c1f0777D75",
+      "nft-collection"
+    );
+  }, [signer]);
+  const mintNft = async (data: Inputs) => {
+    // const metadata = {
+    //   name: "Cool NFT",
+    //   description: "This is a cool NFT",
+    //   image: fs.readFileSync("path/to/image.png"), // This can be an image url or file
+    // };
+    if (!address) return;
+    const metadata = {
+      ...data,
+      // image: fileBuffer,
+      image: selectedFile,
+    };
+    console.log("metadata", metadata);
+    console.log("wallet address", address);
+    const walletAddress = address;
+    const tx = await (await NFTContract)!?.mintTo(walletAddress, metadata);
+    const receipt = tx.receipt; // the transaction receipt
+    const tokenId = tx.id; // the id of the NFT minted
+    const nft = await tx.data(); //
+    console.log("nft", nft);
   };
 
   return (
@@ -43,7 +115,7 @@ const index = (props: Props) => {
       <Header />
       <div className="w-[90%] md:w-[600px] flex flex-col space-y-10 mx-auto mt-20">
         <div className="text-[40px] font-bold text-white">Create New Item</div>
-        <form>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="flex flex-col space-y-3 md:space-y-6">
             <div className="w-full px-3">
               <label className={styles.label}>
@@ -83,6 +155,8 @@ const index = (props: Props) => {
                     type="file"
                     className="hidden"
                     onChange={onSelectFile}
+                    defaultValue={selectedFile}
+                    // {...register("file")}
                   />
                   {selectedFile && (
                     <img
@@ -106,10 +180,11 @@ const index = (props: Props) => {
                 id="grid-first-name"
                 type="text"
                 placeholder="Item Name"
+                {...register("name", { required: true })}
               />
-              {/* <p className="text-red-500 text-xs italic">
-                Please fill out this field.
-              </p> */}
+              <p className="text-red-500 text-xs italic">
+                {errors.name && <span>Name field is required</span>}
+              </p>
             </div>
             <div className="w-full px-3">
               <label className={styles.label}>Description</label>
@@ -121,6 +196,8 @@ const index = (props: Props) => {
                 className={styles.inputBox}
                 id="grid-last-name"
                 placeholder="Provide a detailed description of your item."
+                defaultValue=""
+                {...register("description")}
               />
             </div>
             <div className="w-full px-3">
@@ -142,9 +219,9 @@ const index = (props: Props) => {
               <button
                 // blue background and white text
                 className="
-                bg-blue-500 hover:bg-blue-700 text-lg text-white font-bold py-4 px-7 rounded-xl md:mt-10 mb-20"
+                bg-blue-500 hover:bg-blue-900 text-xl text-white font-bold py-4 px-8 rounded-xl md:mt-10 mb-20"
               >
-                Create
+                {isLoading ? <Loader text="Minting..." /> : "Create"}
               </button>
             </div>
           </div>
