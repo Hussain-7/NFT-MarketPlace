@@ -54,14 +54,6 @@ const index = (props: Props) => {
                 File types supported: JPG, PNG, GIF, SVG, MP4, WEBM, MP3, WAV,
                 OGG, GLB, GLTF. Max size: 100 MB
               </div>
-              {/* <input
-                type="file"
-                style={"display:none;"}
-                className={styles.input}
-                placeholder="Image, Video, Audio or 3D Model"
-                id="grid-first-name"
-                // style="display:none;"
-              /> */}
               <div className="flex items-center justify-center w-[50%] relative">
                 <label className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-transparent  hover:bg-black hover:opacity-70">
                   <div className="flex flex-col items-center justify-center pt-5 pb-6">
@@ -85,9 +77,6 @@ const index = (props: Props) => {
                       <span className="font-semibold">Click to upload</span> or
                       drag and drop
                     </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      SVG, PNG, JPG or GIF (MAX. 800x400px)
-                    </p>
                   </div>
                   <input
                     id="dropzone-file"
@@ -98,7 +87,7 @@ const index = (props: Props) => {
                   {selectedFile && (
                     <img
                       src={preview}
-                      className="absolute top-0 right-0 w-fit"
+                      className="absolute top-[1%] right-[1%] w-[98%] h-[98%] object-cover rounded-md"
                     />
                   )}
                 </label>
