@@ -60,7 +60,7 @@ const Trade = ({ selectedNft, isOwner, isListed, marketNft }: Props) => {
       "https://eth-goerli.g.alchemy.com/v2/sJeqdSsAWetNNKmR__bWMkAXzcmh6a98"
       // "goerli"
     );
-    return sdk!.getContract(
+    return sdk.getContract(
       "0xFE64BFAC909d23027691074E833DcB29a3233523",
       "marketplace"
     );

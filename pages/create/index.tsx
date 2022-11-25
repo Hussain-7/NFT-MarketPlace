@@ -2,18 +2,18 @@ import React, { useState, useEffect, useMemo } from "react";
 import { ThirdwebSDK } from "@thirdweb-dev/sdk";
 import { addresses } from "../../lib/constants";
 
-import { BiImage } from "react-icons/bi";
+import { BiImage, BiX } from "react-icons/bi";
 import Header from "../../components/common/Header";
 import { useForm, SubmitHandler } from "react-hook-form";
 import Loader from "../../components/common/Loader";
-import { MdSettingsInputAntenna } from "react-icons/md";
 import fs from "fs";
 import { useAddress, useSigner } from "@thirdweb-dev/react";
-import { InputType } from "zlib";
+import { ImCross } from "react-icons/im";
+import { errorMsg, successMsg } from "../../lib/common";
 type Inputs = {
   name: string;
   description: string;
-  image: File;
+  image: Array<File>;
 };
 type Props = {};
 const styles = {
@@ -30,51 +30,14 @@ const index = (props: Props) => {
     register,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<Inputs>();
-
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    setIsLoading(true);
-    await mintNft(data);
-    setIsLoading(false);
-
-    console.log(data);
-  };
   const address = useAddress();
   const signer = useSigner();
-  const [selectedFile, setSelectedFile] = useState();
-  const [fileBuffer, setFileBuffer] = useState<string | ArrayBuffer | null>();
   const [isLoading, setIsLoading] = useState(false);
   const [preview, setPreview] = useState<string | undefined>();
-  useEffect(() => {
-    if (!selectedFile) {
-      setPreview("");
-      return;
-    }
 
-    const objectUrl = URL.createObjectURL(selectedFile);
-    setPreview(objectUrl);
-
-    // free memory when ever this component is unmounted
-    return () => URL.revokeObjectURL(objectUrl);
-  }, [selectedFile]);
-
-  const onSelectFile = (e: any) => {
-    if (!e.target.files || e.target.files.length === 0) {
-      setSelectedFile(undefined);
-      return;
-    }
-    // I've kept this example simple by using the first image instead of multiple
-    console.log("e.target.files", e.target.files[0]);
-    const file = e.target.files[0];
-    const reader = new window.FileReader();
-    reader.readAsArrayBuffer(file);
-    reader.onloadend = () => {
-      setSelectedFile(file);
-      setFileBuffer(reader.result);
-    };
-    // setSelectedFile(e.target.files[0]);
-  };
   const NFTContract = useMemo(() => {
     if (!signer) return;
     const sdk = new ThirdwebSDK(
@@ -83,22 +46,43 @@ const index = (props: Props) => {
       "https://eth-goerli.g.alchemy.com/v2/sJeqdSsAWetNNKmR__bWMkAXzcmh6a98"
       // "goerli"
     );
-    return sdk!.getContract(
+    return sdk.getContract(
       "0x97c4ffB08C8438e671951Ae957Dc77c1f0777D75",
       "nft-collection"
     );
   }, [signer]);
+
+  useEffect(() => {
+    if (watch("image").length == 0 && !watch("image")[0]) {
+      setPreview("");
+      return;
+    }
+    const selectedFile = watch("image")[0];
+    console.log("selectedFile", selectedFile);
+    const objectUrl = URL.createObjectURL(selectedFile);
+    console.log("objectUrl", objectUrl);
+    setPreview(objectUrl);
+    // free memory when ever this component is unmounted
+    return () => URL.revokeObjectURL(objectUrl);
+  }, [watch("image")]);
+
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    try {
+      setIsLoading(true);
+      console.log("data", data);
+      await mintNft(data);
+      successMsg("NFT Minted Successfully");
+    } catch (error) {
+      console.log(error);
+      errorMsg("Something went wrong");
+    }
+    setIsLoading(false);
+  };
+
   const mintNft = async (data: Inputs) => {
-    // const metadata = {
-    //   name: "Cool NFT",
-    //   description: "This is a cool NFT",
-    //   image: fs.readFileSync("path/to/image.png"), // This can be an image url or file
-    // };
     if (!address) return;
     const metadata = {
       ...data,
-      // image: fileBuffer,
-      image: selectedFile,
     };
     console.log("metadata", metadata);
     console.log("wallet address", address);
@@ -129,21 +113,6 @@ const index = (props: Props) => {
               <div className="flex items-center justify-center w-64 relative">
                 <label className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-transparent  hover:bg-black hover:opacity-70">
                   <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                    {/* <svg
-                      aria-hidden="true"
-                      className="w-10 h-10 mb-3 text-gray-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                      ></path>
-                    </svg> */}
                     <BiImage className=" text-white w-20 h-20" />
                     <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
                       <span className="font-semibold">Click to upload</span> or
@@ -154,22 +123,39 @@ const index = (props: Props) => {
                     id="dropzone-file"
                     type="file"
                     className="hidden"
-                    onChange={onSelectFile}
-                    defaultValue={selectedFile}
-                    // {...register("file")}
+                    defaultValue={""}
+                    {...register("image", { required: true })}
                   />
-                  {selectedFile && (
+                  {watch("image") && watch("image")?.length > 0 && (
                     <img
                       src={preview}
                       className="absolute top-[1%] right-[1%] w-[98%] h-[98%] object-cover rounded-md"
                     />
                   )}
+                  {/* Cross button on top right of the image */}
+                  {watch("image") && watch("image")?.length > 0 && (
+                  <div className="absolute top-2 right-2">
+                    <button
+                        type="button"
+                        // on button click select image should not be clickedd
+                      className="flex items-center justify-center w-6 h-6 rounded-full text-white"
+                      onClick={() => {
+                        // @ts-ignore
+                        // document.getElementById("dropzone-file").value = "";
+                        setValue("image", "");
+                        setPreview("");
+                        
+                      }}
+                    >
+                      <ImCross />
+                    </button>
+                  </div>
+                   )} 
                 </label>
               </div>
-
-              {/* <p className="text-red-500 text-xs italic">
-                Please fill out this field.
-              </p> */}
+              <p className="text-red-500 text-xs italic mt-3">
+                {errors.image && <span>Image is required</span>}
+              </p>
             </div>
             <div className="w-full px-3">
               <label className={styles.label}>
@@ -212,12 +198,8 @@ const index = (props: Props) => {
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700"></div>
               </div>
             </div>
-            {/* <div className="w-full px-4">
-              <hr className="px-3 border-[#8A939B]" />
-            </div> */}
             <div className="w-full px-3">
               <button
-                // blue background and white text
                 className="
                 bg-blue-500 hover:bg-blue-900 text-xl text-white font-bold py-4 px-8 rounded-xl md:mt-10 mb-20"
               >
