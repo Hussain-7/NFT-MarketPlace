@@ -20,6 +20,7 @@ import Loader from "../common/Loader";
 import { addresses } from "../../lib/constants";
 import Modal from "../common/Modal";
 import CustomModal from "../common/Modal";
+import { errorMsg, successMsg } from "../../lib/common";
 
 const style = {
   button: `mr-8 justify-center flex items-center py-2 px-12 rounded-lg cursor-pointer w-full`,
@@ -51,24 +52,6 @@ const Trade = ({ selectedNft, isOwner, isListed, marketNft }: Props) => {
     setEnableButton(true);
   }, [marketNft, selectedNft]);
 
-  const successMsg = (
-    text: string = `Purchase successful!`,
-    toastHandler = toast
-  ) =>
-    toastHandler.success(text, {
-      style: {
-        background: "#04111d",
-        color: "#fff",
-      },
-    });
-
-  const errorMsg = (text: string = "Payment Failed!", toastHandler = toast) =>
-    toastHandler.error(text, {
-      style: {
-        background: "#04111d",
-        color: "#fff",
-      },
-    });
   const marketPlaceContract = useMemo(() => {
     if (!signer) return;
     const sdk = new ThirdwebSDK(
