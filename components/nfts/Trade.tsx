@@ -87,6 +87,11 @@ const Trade = ({ selectedNft, isOwner, isListed, marketNft }: Props) => {
     } catch (err) {
       if (err instanceof Error && err.message.includes("is no longer valid")) {
         errorMsg("This NFT is no longer available!");
+      } else if (
+        err instanceof Error &&
+        err.message.includes("insufficient funds for gas")
+      ) {
+        errorMsg("Payment Failed: Due to Insufficient funds in wallet!");
       } else {
         errorMsg("Payment Failed!");
       }
@@ -167,7 +172,7 @@ const Trade = ({ selectedNft, isOwner, isListed, marketNft }: Props) => {
           </div>
         </>
       )}
-      <div className="w-[40%] text-center items-center">
+      <div className="lg:w-[40%] text-center items-center">
         {isListed === "true" ? (
           !isOwner ? (
             <>

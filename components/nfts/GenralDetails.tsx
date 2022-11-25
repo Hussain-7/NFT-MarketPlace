@@ -13,16 +13,16 @@ type Props = {
 };
 
 const style = {
-  wrapper: `flex`,
-  infoContainer: `h-36 flex flex-col flex-1 justify-between mb-6`,
+  wrapper: `flex mb-10 md:mb-0 flex-col md:flex-row`,
+  infoContainer: `h-16 md:h-36 md:w-full flex flex-col flex-1 justify-between mb-6`,
   accent: `text-[#2081e2] text-lg`,
   nftTitle: `text-3xl font-extrabold`,
   otherInfo: `flex`,
   ownedBy: `text-[#8a939b] mr-4`,
   likes: `flex items-center text-[#8a939b]`,
   likeIcon: `mr-1`,
-  actionButtonsContainer: `w-44`,
-  actionButtons: `flex container justify-between text-[1.4rem] border-2 rounded-lg`,
+  actionButtonsContainer: `w-44 ml-auto`,
+  actionButtons: `flex flex-row container justify-between text-[1.4rem] border-2 rounded-lg`,
   actionButton: `my-2`,
   divider: `border-r-2`,
 };

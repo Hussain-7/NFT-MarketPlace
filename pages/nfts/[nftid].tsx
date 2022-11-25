@@ -8,13 +8,14 @@ import Trade from "../../components/nfts/Trade";
 import { MarketPlaceContext } from "../../context/MarketPlace";
 import CustomModal from "../../components/common/Modal";
 import { NFT } from "@thirdweb-dev/sdk";
+import useMediaQuery from "../../hooks/useMediaQuery";
 
 const style = {
   wrapper: `flex flex-col items-center container-lg text-[#e5e8eb]`,
   container: `container p-6`,
   topContent: `flex flex-col space-y-8 md:flex-row md:space-y-0 items-center`,
-  nftImgContainer: `flex-1 mr-4`,
-  detailsContainer: `flex-[2] ml-4`,
+  nftImgContainer: `flex-1 md:mr-4 w-full`,
+  detailsContainer: `flex-[2] md:ml-4 w-full `,
 };
 
 const NFTItem = () => {
@@ -25,6 +26,16 @@ const NFTItem = () => {
   const [isOwner, setIsOwner] = useState(false);
   const [selectedNft, setSelectedNft] = useState<any>(null);
   const [marketNft, setMarketNft] = useState<any>(null);
+  // check if media is less than 700px
+  const matches = useMediaQuery({ query: "(max-width: 700px)" });
+  // useEffect(() => {
+  //   if (window.innerWidth < 700) {
+  //     setIsMobile(true);
+  //   } else {
+  //     setIsMobile(false);
+  //   }
+  //   console.log("window.innerWidth", window.innerWidth);
+  // }, [matches]);
 
   useEffect(() => {
     if (listings?.length === 0 || !nftid || !selectedNft) return;
@@ -58,12 +69,18 @@ const NFTItem = () => {
       <Header />
       <div className={style.wrapper}>
         <div className={style.container}>
+          {matches && (
+            <GenralDetails selectedNft={selectedNft} isOwner={isOwner} />
+          )}
           <div className={style.topContent}>
             <div className={style.nftImgContainer}>
               <NFTImage selectedNft={selectedNft} />
             </div>
             <div className={style.detailsContainer}>
-              <GenralDetails selectedNft={selectedNft} isOwner={isOwner} />
+              {!matches && (
+                <GenralDetails selectedNft={selectedNft} isOwner={isOwner} />
+              )}
+
               <Trade
                 isListed={router?.query?.isListed}
                 isOwner={isOwner}
