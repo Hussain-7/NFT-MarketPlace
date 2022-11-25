@@ -41,10 +41,10 @@ const index = (props: Props) => {
   return (
     <div>
       <Header />
-      <div className="w-[600px] flex flex-col space-y-10 mx-auto mt-20">
+      <div className="w-[90%] md:w-[600px] flex flex-col space-y-10 mx-auto mt-20">
         <div className="text-[40px] font-bold text-white">Create New Item</div>
         <form>
-          <div className="flex flex-col space-y-6">
+          <div className="flex flex-col space-y-3 md:space-y-6">
             <div className="w-full px-3">
               <label className={styles.label}>
                 Image, Video, Audio or 3D Model{" "}
@@ -54,7 +54,7 @@ const index = (props: Props) => {
                 File types supported: JPG, PNG, GIF, SVG, MP4, WEBM, MP3, WAV,
                 OGG, GLB, GLTF. Max size: 100 MB
               </div>
-              <div className="flex items-center justify-center w-[50%] relative">
+              <div className="flex items-center justify-center w-64 relative">
                 <label className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-transparent  hover:bg-black hover:opacity-70">
                   <div className="flex flex-col items-center justify-center pt-5 pb-6">
                     {/* <svg
@@ -142,7 +142,7 @@ const index = (props: Props) => {
               <button
                 // blue background and white text
                 className="
-                bg-blue-500 hover:bg-blue-700 text-lg text-white font-bold py-4 px-7 rounded-xl mt-10 mb-20"
+                bg-blue-500 hover:bg-blue-700 text-lg text-white font-bold py-4 px-7 rounded-xl md:mt-10 mb-20"
               >
                 Create
               </button>
