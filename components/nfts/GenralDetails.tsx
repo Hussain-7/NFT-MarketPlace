@@ -31,29 +31,38 @@ const GenralDetails = ({ selectedNft, isOwner }: Props) => {
   const router = useRouter();
   return (
     <div className={style.wrapper}>
-      <div className={style.infoContainer}>
-        <div className={style.accent}>
-          <button
-            onClick={() => {
-              router.back();
-            }}
-          >
-            Bored Ape Yacht Club
-          </button>
-        </div>
-        <div className={style.nftTitle}>{selectedNft?.metadata.name}</div>
-        <div className={style.otherInfo}>
-          <div className={style.ownedBy}>
-            Owned by{" "}
-            <span className={style.accent + "text-sm"}>
-              {!isOwner ? selectedNft?.owner?.slice(2, 8).toUpperCase() : "You"}
-            </span>
+      {selectedNft?.metadata.name && (
+        <div className={style.infoContainer}>
+          <div className={style.accent}>
+            <button
+              onClick={() => {
+                router.back();
+              }}
+            >
+              Bored Ape Yacht Club
+              {/* <div className="animate-pulse">
+                <div className="h-4 bg-[#2081e2] w-[60%] rounded-full"></div>
+              </div> */}
+            </button>
           </div>
-          <div className={style.likes}>
-            <AiFillHeart className={style.likeIcon} /> 2.3K favorites
+          <div className={style.nftTitle}>
+            {selectedNft?.metadata.name}
+          </div>
+          <div className={style.otherInfo}>
+            <div className={style.ownedBy}>
+              Owned by{" "}
+              <span className={style.accent + "text-sm"}>
+                {!isOwner
+                  ? selectedNft?.owner?.slice(2, 8).toUpperCase()
+                  : "You"}
+              </span>
+            </div>
+            <div className={style.likes}>
+              <AiFillHeart className={style.likeIcon} /> 2.3K favorites
+            </div>
           </div>
         </div>
-      </div>
+      )}
       <div className={style.actionButtonsContainer}>
         <div className={style.actionButtons}>
           <div className={`${style.actionButton} ml-2`}>
