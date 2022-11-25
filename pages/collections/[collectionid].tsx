@@ -17,7 +17,6 @@ import { MarketPlaceContext } from "../../context/MarketPlace";
 import {
   useActiveListings,
   useAddress,
-  useContract,
   useListings,
   useNFTs,
   useOwnedNFTs,

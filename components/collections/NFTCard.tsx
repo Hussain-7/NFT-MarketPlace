@@ -46,10 +46,16 @@ const NFTCard = ({ nftItem, listings, title }: NFTCardProps) => {
     <div
       className={style.wrapper}
       onClick={() => {
-        Router.push({
-          pathname: `/nfts/${nftItem.metadata.id}`,
-          query: { isListed: isListed },
-        });
+        Router.push(
+          {
+            pathname: `/nfts/${nftItem.metadata.id}`,
+            query: { isListed: isListed },
+          },
+          undefined,
+          {
+            shallow: true,
+          }
+        );
       }}
     >
       <div className={style.imgContainer}>

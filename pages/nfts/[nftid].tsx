@@ -6,12 +6,6 @@ import ItemActivity from "../../components/nfts/ItemActivity";
 import NFTImage from "../../components/nfts/NFTImage";
 import Trade from "../../components/nfts/Trade";
 import { MarketPlaceContext } from "../../context/MarketPlace";
-import {
-  useAddress,
-  useContract,
-  useListing,
-  useListings,
-} from "@thirdweb-dev/react";
 import CustomModal from "../../components/common/Modal";
 import { NFT } from "@thirdweb-dev/sdk";
 
@@ -37,7 +31,7 @@ const NFTItem = () => {
     (async () => {
       console.log("selectedNft in purchase:", selectedNft);
       console.log("listings in purchase", listings);
-      const marketNftVal = listings!.find(
+      const marketNftVal = listings!?.find(
         (marketNft) => marketNft?.asset.id === selectedNft?.metadata?.id
       );
       console.log("marketNftVal", marketNftVal);
@@ -53,7 +47,9 @@ const NFTItem = () => {
   }, [user.address, selectedNft]);
   useEffect(() => {
     if (nfts?.length === 0) return;
-    const nft = nfts!.find((nft: NFT) => nft.metadata.id == router.query.nftid);
+    const nft = nfts!?.find(
+      (nft: NFT) => nft.metadata.id == router.query.nftid
+    );
     setSelectedNft(nft);
   }, [nfts]);
 

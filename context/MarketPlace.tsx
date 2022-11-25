@@ -1,10 +1,4 @@
-import {
-  useAddress,
-  useContract,
-  useListings,
-  useSDK,
-  useUser,
-} from "@thirdweb-dev/react";
+import { useAddress, useSDK, useUser } from "@thirdweb-dev/react";
 import { ThirdwebSDK } from "@thirdweb-dev/sdk";
 import { SocketAddress } from "net";
 import { NextComponentType, NextPageContext } from "next";
@@ -76,15 +70,18 @@ export const MarketPlaceProvider = ({ children }: Props) => {
   }, []);
 
   const getAllNfts = useCallback(async () => {
-    return await (await nftContract)!.getAll();
+    return [];
+    // return await (await nftContract)!.getAll();
     // @ts-ignore
   }, [nftContract, address]);
   const getUserNfts = useCallback(async () => {
-    return await (await nftContract)!.getOwned(address);
+    return [];
+    // return await (await nftContract)!.getOwned(address);
     // @ts-ignore
   }, [nftContract, address]);
   const getActiveListings = useCallback(async () => {
-    return await (await marketPlaceContract)!.getActiveListings();
+    return [];
+    // return await (await marketPlaceContract)!.getActiveListings();
   }, [marketPlaceContract, address]);
 
   const {
