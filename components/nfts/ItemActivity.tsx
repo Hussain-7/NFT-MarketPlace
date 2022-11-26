@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useContext, useMemo } from "react";
 import { CgArrowsExchangeV } from "react-icons/cg";
 import { AiOutlineDown, AiOutlineUp } from "react-icons/ai";
 import { useState } from "react";
@@ -7,6 +7,7 @@ import { NFTProps } from "../../types";
 import EventItem from "./itemActivity/EventItem";
 import { ThirdwebSDK } from "@thirdweb-dev/sdk";
 import { useAddress } from "@thirdweb-dev/react";
+import { MarketPlaceContext } from "../../context/MarketPlace";
 
 type Props = {};
 
@@ -30,7 +31,7 @@ const style = {
 
 const ItemActivity = ({ selectedNft }: NFTProps) => {
   const [toggle, setToggle] = useState(true);
-  
+  const { events } = useContext(MarketPlaceContext);
   return (
     <div className={style.wrapper}>
       <div className={style.title} onClick={() => setToggle(!toggle)}>
@@ -60,7 +61,7 @@ const ItemActivity = ({ selectedNft }: NFTProps) => {
             <div className={`${style.tableHeaderElement} flex-[3]`}>To</div>
             <div className={`${style.tableHeaderElement} flex-[2]`}>Date</div>
           </div>
-          {dummyEvents.map((event, id) => (
+          {events?.map((event, id) => (
             <EventItem key={id} event={event} />
           ))}
         </div>

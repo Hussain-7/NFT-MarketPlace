@@ -1,3 +1,4 @@
+import { ContractEvent } from "@thirdweb-dev/sdk";
 import React from "react";
 import { BsFillCartFill } from "react-icons/bs";
 
@@ -13,12 +14,7 @@ const style = {
 };
 
 type Props = {
-  event: {
-    price: number;
-    from: string;
-    to: string;
-    date: string;
-  };
+  event: ContractEvent<Record<string, any>>;
 };
 
 const EventItem = ({ event }: Props) => {
@@ -28,7 +24,7 @@ const EventItem = ({ event }: Props) => {
         <div className={style.eventIcon}>
           <BsFillCartFill />
         </div>
-        <div className={style.eventName}>Sale</div>
+        <div className={style.eventName}>{event.eventName}</div>
       </div>
       <div className={`${style.eventPrice} flex-[2]`}>
         <img
@@ -36,11 +32,22 @@ const EventItem = ({ event }: Props) => {
           alt="eth"
           className={style.ethLogo}
         />
-        <div className={style.eventPriceValue}>{event.price}</div>
+        <div className={style.eventPriceValue}>
+          {parseInt(
+            event.data?.totalPricePaid?._hex
+              ? event.data?.totalPricePaid?._hex
+              : event?.data?.listing[8]
+          ) /
+            10 ** 18}
+        </div>
       </div>
-      <div className={`${style.accent} flex-[3]`}>{event.from}</div>
-      <div className={`${style.accent} flex-[3]`}>{event.to}</div>
-      <div className={`${style.accent} flex-[2]`}>{event.date}</div>
+      <div className={`${style.accent} flex-[3]`}>
+        {event.data?.lister?.slice(0, 10)}
+      </div>
+      <div className={`${style.accent} flex-[3]`}>
+        {event.data?.buyer ? event.data?.buyer?.slice(0, 10) : "-"}
+      </div>
+      <div className={`${style.accent} flex-[2]`}>2 months ago</div>
     </div>
   );
 };

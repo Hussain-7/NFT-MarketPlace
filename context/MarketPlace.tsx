@@ -100,6 +100,10 @@ export const MarketPlaceProvider = ({ children }: Props) => {
 
     const events = [...newSaleEvents, ...ListingAddedEvents];
     console.log("events", events);
+    // find volume volumeTraded
+    // const volumeTraded = events.reduce((acc, event) => {
+    //   return acc + event.returnValues.price;
+    // }, 0);
     return events;
   }, [nftContract, address]);
 
