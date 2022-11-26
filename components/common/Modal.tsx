@@ -52,12 +52,12 @@ const CustomModal = ({
               type="number"
               placeholder="Amout"
               className="p-4 flex-1 border-none outline-none hover:outline-none
-						focus:outline-none focus:ring-0  rounded-md"
+						focus:outline-none focus:ring-0  rounded-md text-black text-lg"
             />
             {/* Create drop down menu for token name */}
             <select
               className="p-4 w-[20%] border-none outline-none  hover:outline-none
-						focus:outline-none focus:ring-0  rounded-md"
+						focus:outline-none focus:ring-0  rounded-md text-black"
             >
               <option value="FUSD">ETH</option>
             </select>

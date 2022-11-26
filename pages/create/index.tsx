@@ -10,6 +10,7 @@ import fs from "fs";
 import { useAddress, useSigner } from "@thirdweb-dev/react";
 import { ImCross } from "react-icons/im";
 import { errorMsg, successMsg } from "../../lib/common";
+import { Toaster } from "react-hot-toast";
 type Inputs = {
   name: string;
   description: string;
@@ -31,6 +32,7 @@ const index = (props: Props) => {
     handleSubmit,
     watch,
     setValue,
+    reset,
     formState: { errors },
   } = useForm<Inputs>();
   const address = useAddress();
@@ -53,6 +55,7 @@ const index = (props: Props) => {
   }, [signer]);
 
   useEffect(() => {
+    console.log("watch(image)", watch("image"));
     if (watch("image").length == 0 && !watch("image")[0]) {
       setPreview("");
       return;
@@ -72,8 +75,11 @@ const index = (props: Props) => {
       console.log("data", data);
       await mintNft(data);
       successMsg("NFT Minted Successfully");
+      // Clear form data
+      reset();
+      setPreview("");
     } catch (error) {
-      console.log(error);
+      console.log("error in onsubmit", error);
       errorMsg("Something went wrong");
     }
     setIsLoading(false);
@@ -83,20 +89,22 @@ const index = (props: Props) => {
     if (!address) return;
     const metadata = {
       ...data,
+      image: watch("image")[0],
     };
     console.log("metadata", metadata);
     console.log("wallet address", address);
     const walletAddress = address;
     const tx = await (await NFTContract)!?.mintTo(walletAddress, metadata);
-    const receipt = tx.receipt; // the transaction receipt
-    const tokenId = tx.id; // the id of the NFT minted
-    const nft = await tx.data(); //
+    const receipt = tx?.receipt; // the transaction receipt
+    const tokenId = tx?.id; // the id of the NFT minted
+    const nft = await tx?.data(); //
     console.log("nft", nft);
   };
 
   return (
     <div>
       <Header />
+      <Toaster position="bottom-center" reverseOrder={false} />
       <div className="w-[90%] md:w-[600px] flex flex-col space-y-10 mx-auto mt-20">
         <div className="text-[40px] font-bold text-white">Create New Item</div>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -134,23 +142,22 @@ const index = (props: Props) => {
                   )}
                   {/* Cross button on top right of the image */}
                   {watch("image") && watch("image")?.length > 0 && (
-                  <div className="absolute top-2 right-2">
-                    <button
+                    <div className="absolute top-2 right-2">
+                      <button
                         type="button"
                         // on button click select image should not be clickedd
-                      className="flex items-center justify-center w-6 h-6 rounded-full text-white"
-                      onClick={() => {
-                        // @ts-ignore
-                        // document.getElementById("dropzone-file").value = "";
-                        setValue("image", "");
-                        setPreview("");
-                        
-                      }}
-                    >
-                      <ImCross />
-                    </button>
-                  </div>
-                   )} 
+                        className="flex items-center justify-center w-6 h-6 rounded-full text-white"
+                        onClick={() => {
+                          // @ts-ignore
+                          // document.getElementById("dropzone-file").value = "";
+                          setValue("image", "");
+                          setPreview("");
+                        }}
+                      >
+                        <ImCross />
+                      </button>
+                    </div>
+                  )}
                 </label>
               </div>
               <p className="text-red-500 text-xs italic mt-3">
