@@ -11,7 +11,7 @@ type NFTCardProps = {
 };
 
 const style = {
-  wrapper: `bg-[#303339] flex-auto my-10 mx-auto rounded-2xl overflow-hidden cursor-pointer`,
+  wrapper: `bg-[#303339] flex-auto my-10 mx-auto rounded-2xl overflow-hidden cursor-pointer hover:scale-110 duration-150 ease-in-out`,
   imgContainer: `h-2/3 w-full overflow-hidden flex justify-center items-center`,
   nftImg: `w-full object-cover`,
   details: `p-3`,

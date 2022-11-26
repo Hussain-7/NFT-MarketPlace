@@ -80,7 +80,9 @@ const index = (props: Props) => {
       setPreview("");
     } catch (error) {
       console.log("error in onsubmit", error);
-      errorMsg("Something went wrong");
+      if (error instanceof Error && error.message.includes("AccessControl")) {
+        errorMsg("You are not authorized to mint NFT");
+      } else errorMsg("Something went wrong");
     }
     setIsLoading(false);
   };

@@ -28,11 +28,13 @@ const style = {
   headerIcon: `text-[#8a939b] text-3xl font-black px-4 hover:text-white cursor-pointer`,
 };
 const Header = () => {
+  const connect = useMetamask();
   const router = useRouter();
   const address = useAddress();
+  const disconnect = useDisconnect();
+
   const { user } = useContext(MarketPlaceContext);
   const [showMenu, setShowMenu] = useState(false);
-  const disconnect = useDisconnect();
   useEffect(() => {
     if (!address) router.push("/", undefined, { shallow: true });
   }, [address]);
@@ -57,27 +59,21 @@ const Header = () => {
         />
       </div>
       <div className={style.headerItems}>
-        <Link href="/collections/0x97c4ffB08C8438e671951Ae957Dc77c1f0777D75">
+        <Link
+          href="/collections/0x97c4ffB08C8438e671951Ae957Dc77c1f0777D75"
+          shallow={true}
+        >
           <div className={style.headerItem}> Collections </div>
         </Link>
-        <Link href="/create">
+        <Link href="/create" shallow={true}>
           <div className={style.headerItem}> Create </div>
         </Link>
-        {/* {user.address && (
-          <Link href={`/profile/${user.address}`}>
-            <div className={style.headerItem}> My assets </div>
-          </Link>
-        )} */}
-
         <div
           className={style.headerIcon}
           onMouseOver={() => {
             console.log("enter");
             setShowMenu(true);
           }}
-          // onMouseLeave={() => {
-          //   console.log("leave");
-          // }}
           onMouseOut={() => {
             console.log("out");
             setShowMenu(false);
@@ -85,7 +81,6 @@ const Header = () => {
         >
           {/* Create dropdown menu here */}
           <CgProfile />
-
           {showMenu && (
             <div className="relative z-50">
               <div className="absolute top-0 right-0">
@@ -100,6 +95,7 @@ const Header = () => {
                     <li>
                       <Link
                         href={`/profile/${user.address}`}
+                        shallow={true}
                         className="py-2 px-4 hover:bg-[#1b2e41] dark:hover:bg-gray-600 dark:hover:text-white flex flex-row items-center justify-start"
                       >
                         <BiUser fontSize={20} className="mr-3" />{" "}
