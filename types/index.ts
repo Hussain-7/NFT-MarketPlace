@@ -6,6 +6,11 @@ import {
   NFTCollection,
 } from "@thirdweb-dev/sdk";
 import { BigNumber } from "ethers";
+import {
+  QueryObserverResult,
+  RefetchOptions,
+  RefetchQueryFilters,
+} from "react-query";
 
 // For general use case
 export type ObjectArray = Array<{
@@ -59,6 +64,17 @@ export type ContextType = {
   nftsLoaded: boolean;
   activeListingsLoaded: boolean;
   userNftsLoaded: boolean;
+  refetchActiveListings?: <TPageData>(
+    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
+  ) => Promise<
+    QueryObserverResult<(AuctionListing | DirectListing)[], unknown>
+  >;
+  refetchUserNfts?: <TPageData>(
+    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
+  ) => Promise<QueryObserverResult<NFT[], unknown>>;
+  refetchNfts?: <TPageData>(
+    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
+  ) => Promise<QueryObserverResult<NFT[], unknown>>;
 };
 
 export type NFTProps = {

@@ -148,13 +148,13 @@ const Profile = () => {
           <div className={style.statsContainer}>
             <div className={style.collectionStat}>
               <div className={style.statValue}>{userNfts?.length || 0}</div>
-              <div className={style.statName}>Nfts Owned</div>
+              <div className={style.statName}>NFTS Owned</div>
             </div>
             <div className={style.collectionStat}>
               <div className={style.statValue}>{userListings?.length || 0}</div>
               <div className={style.statName}>NFTS Listed</div>
             </div>
-            <div className={style.collectionStat}>
+            {/* <div className={style.collectionStat}>
               <div className={style.statValue}>
                 <img
                   src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Ethereum_logo_2014.svg/1257px-Ethereum_logo_2014.svg.png"
@@ -164,7 +164,7 @@ const Profile = () => {
                 {collection?.floorPrice}
               </div>
               <div className={style.statName}>floor price</div>
-            </div>
+            </div> */}
             <div className={style.collectionStat}>
               <div className={style.statValue}>
                 <img

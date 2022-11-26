@@ -71,16 +71,20 @@ export const MarketPlaceProvider = ({ children }: Props) => {
 
   const getAllNfts = useCallback(async () => {
     // return [];
+    if (!nftContract) return [];
     return await (await nftContract)!.getAll();
     // @ts-ignore
   }, [nftContract, address]);
   const getUserNfts = useCallback(async () => {
     // return [];
+    if (!nftContract) return [];
     return await (await nftContract)!.getOwned(address);
     // @ts-ignore
   }, [nftContract, address]);
   const getActiveListings = useCallback(async () => {
     // return [];
+    console.log("getActiveListings called:", marketPlaceContract);
+    if (!marketPlaceContract) return [];
     return await (await marketPlaceContract)!.getActiveListings();
   }, [marketPlaceContract, address]);
 
@@ -131,6 +135,9 @@ export const MarketPlaceProvider = ({ children }: Props) => {
         nftsLoaded: !nftsLoaded,
         activeListingsLoaded: !activeListingsLoaded,
         userNftsLoaded: !userNftsLoaded,
+        refetchNfts,
+        refetchUserNfts,
+        refetchActiveListings,
       }}
     >
       {children}

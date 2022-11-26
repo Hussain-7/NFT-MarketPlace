@@ -24,6 +24,7 @@ import {
   useUser,
 } from "@thirdweb-dev/react";
 import { addresses } from "../../lib/constants";
+import { AuctionListing, DirectListing } from "@thirdweb-dev/sdk";
 const style = {
   bannerImageContainer: ` lg:h-[20rem] w-screen overflow-hidden flex justify-center items-center`,
   bannerImage: `w-full object-cover`,
@@ -62,6 +63,7 @@ const CollectionId = () => {
   const { collectionid } = router.query;
   console.log(collectionid);
   const [owners, setOwners] = useState<string[]>([]);
+  const [floorPrice, setFloorPrice] = useState<number>(0);
   const [collection, setCollection] = useState<collectionType>({
     imageUrl: "https://via.placeholder.com/200",
     bannerImageUrl: "https://via.placeholder.com/200",
@@ -80,6 +82,13 @@ const CollectionId = () => {
   const [listedNfts, setListedNfts] = useState<any[]>([]);
   useEffect(() => {
     // finds unique owners count from list of nfts
+    const lowestPriceofListedNfts = listings?.reduce((acc, curr) => {
+      if (parseFloat(curr!?.buyoutCurrencyValuePerToken.displayValue) < acc) {
+        return parseFloat(curr!?.buyoutCurrencyValuePerToken.displayValue);
+      }
+      return acc;
+    }, Infinity);
+    if (lowestPriceofListedNfts) setFloorPrice(lowestPriceofListedNfts);
     const uniqueOwners =
       listings
         ?.map((nft) => nft.sellerAddress)
@@ -199,7 +208,7 @@ const CollectionId = () => {
                   alt="eth"
                   className={style.ethLogo}
                 />
-                {collection?.floorPrice}
+                {floorPrice}
               </div>
               <div className={style.statName}>floor price</div>
             </div>

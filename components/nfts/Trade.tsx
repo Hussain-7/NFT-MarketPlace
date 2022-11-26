@@ -21,6 +21,7 @@ import { addresses } from "../../lib/constants";
 import Modal from "../common/Modal";
 import CustomModal from "../common/Modal";
 import { errorMsg, successMsg } from "../../lib/common";
+import { MarketPlaceContext } from "../../context/MarketPlace";
 
 const style = {
   button: `mr-8 justify-center flex items-center py-2 px-12 rounded-lg cursor-pointer w-full`,
@@ -37,7 +38,10 @@ type Props = {
 };
 
 const Trade = ({ selectedNft, isOwner, isListed, marketNft }: Props) => {
+  const { refetchNfts, refetchUserNfts, refetchActiveListings } =
+    useContext(MarketPlaceContext);
   const signer = useSigner();
+  const [isDone, setIsDone] = useState(false);
   const [enableButton, setEnableButton] = useState(false);
   const [loading, setLoading] = useState(false);
   const [, switchNetwork] = useNetwork();
@@ -133,6 +137,10 @@ const Trade = ({ selectedNft, isOwner, isListed, marketNft }: Props) => {
       const listingId = tx.id; // the id of the newly created listing
       console.log("receipt", receipt);
       console.log("listingId", listingId);
+      if (refetchActiveListings) {
+        const result = await refetchActiveListings();
+        console.log("result", result);
+      }
       successMsg("Listing successful!");
       setLoading(false);
       setShowModal(false);
@@ -173,30 +181,33 @@ const Trade = ({ selectedNft, isOwner, isListed, marketNft }: Props) => {
         </>
       )}
       <div className="lg:w-[40%] text-center items-center">
-        {isListed === "true" ? (
-          !isOwner ? (
-            <>
-              <div
-                onClick={() => {
-                  enableButton && !isOwner && !loading
-                    ? buyItem(marketNft!.id, 1)
-                    : null;
-                }}
-                className={`${style.button} bg-[#2081e2] hover:bg-[#42a0ff]`}
-              >
-                <IoMdWallet className={style.buttonIcon} />
-                <div className={style.buttonText}>
-                  {loading ? <Loader text={"Buying..."} /> : "Buy Now"}
-                </div>
-              </div>
-            </>
-          ) : (
-            <div className={`${style.button} bg-[#507397]`}>
+        {/* Case when item is listed and current user not owner */}
+        {isListed === "true" && !isOwner && (
+          <>
+            <div
+              onClick={() => {
+                enableButton && !isOwner && !loading
+                  ? buyItem(marketNft!.id, 1)
+                  : null;
+              }}
+              className={`${style.button} bg-[#2081e2] hover:bg-[#42a0ff]`}
+            >
               <IoMdWallet className={style.buttonIcon} />
-              <div className={style.buttonText}>Item Listed</div>
+              <div className={style.buttonText}>
+                {loading ? <Loader text={"Buying..."} /> : "Buy Now"}
+              </div>
             </div>
-          )
-        ) : isOwner === true ? (
+          </>
+        )}
+        {/* Case when item is listed and current user is owner */}
+        {isListed === "true" && isOwner && (
+          <div className={`${style.button} bg-[#507397]`}>
+            <IoMdWallet className={style.buttonIcon} />
+            <div className={style.buttonText}>Item Listed</div>
+          </div>
+        )}
+        {/* Case when item is not listed and current user is owner */}
+        {isListed === "false" && isOwner === true && (
           <div
             onClick={() => {
               setShowModal(true);
@@ -205,13 +216,6 @@ const Trade = ({ selectedNft, isOwner, isListed, marketNft }: Props) => {
           >
             <IoMdWallet className={style.buttonIcon} />
             <div className={style.buttonText}>List Item</div>
-          </div>
-        ) : (
-          <div
-            className={`${style.button} border border-[#151c22]  bg-[#363840] hover:bg-[#4c505c]`}
-          >
-            <HiTag className={style.buttonIcon} />
-            <div className={style.buttonText}>Make Offer</div>
           </div>
         )}
       </div>
