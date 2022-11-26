@@ -1,5 +1,6 @@
 import {
   AuctionListing,
+  ContractEvent,
   DirectListing,
   Marketplace,
   NFT,
@@ -64,6 +65,7 @@ export type ContextType = {
   nftsLoaded: boolean;
   activeListingsLoaded: boolean;
   userNftsLoaded: boolean;
+  events: ContractEvent<Record<string, any>>[] | undefined;
   refetchActiveListings?: <TPageData>(
     options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
   ) => Promise<

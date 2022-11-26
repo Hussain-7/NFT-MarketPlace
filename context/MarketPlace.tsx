@@ -20,6 +20,7 @@ export const MarketPlaceContext = createContext<ContextType>({
   listings: [],
   userNfts: [],
   userListings: [],
+  events: [],
   nftsLoaded: false,
   activeListingsLoaded: false,
   userNftsLoaded: false,
@@ -88,6 +89,20 @@ export const MarketPlaceProvider = ({ children }: Props) => {
     return await (await marketPlaceContract)!.getActiveListings();
   }, [marketPlaceContract, address]);
 
+  const getAllMarkeplaceEvents = useCallback(async () => {
+    // return [];
+    if (!nftContract || !address) return [];
+    const newSaleEvents = await (await marketPlaceContract)!.events.getEvents(
+      "NewSale"
+    );
+    const ListingAddedEvents =
+      await (await marketPlaceContract)!.events.getEvents("ListingAdded");
+
+    const events = [...newSaleEvents, ...ListingAddedEvents];
+    console.log("events", events);
+    return events;
+  }, [nftContract, address]);
+
   const {
     data: nfts,
     error: nftsLoadingError,
@@ -108,6 +123,13 @@ export const MarketPlaceProvider = ({ children }: Props) => {
     isLoading: activeListingsLoaded,
     refetch: refetchActiveListings,
   } = useQuery("getActiveListings", getActiveListings);
+
+  const {
+    data: events,
+    error: eventsError,
+    isLoading: eventsLoaded,
+    refetch: refetchEvents,
+  } = useQuery("getAllMarkeplaceEvents", getAllMarkeplaceEvents);
   useEffect(() => {
     // check if the user has any listings
     if (listings && listings.length > 0 && address) {
@@ -117,13 +139,15 @@ export const MarketPlaceProvider = ({ children }: Props) => {
       setUserListings(userListing);
     }
   }, [listings, address]);
+
   useEffect(() => {
     console.log("============================================================");
     console.log("data", nfts, userNfts, userListings, listings);
     console.log("isloaded", nftsLoaded, userNftsLoaded, activeListingsLoaded);
     console.log("error", nftsLoadingError, userNftsError, activeListingsErrors);
+    console.log("events", events);
     console.log("============================================================");
-  }, [nfts, userNfts, listings]);
+  }, [nfts, userNfts, listings, events]);
   return (
     <MarketPlaceContext.Provider
       value={{
@@ -132,6 +156,7 @@ export const MarketPlaceProvider = ({ children }: Props) => {
         listings,
         userNfts,
         userListings,
+        events,
         nftsLoaded: !nftsLoaded,
         activeListingsLoaded: !activeListingsLoaded,
         userNftsLoaded: !userNftsLoaded,

@@ -207,7 +207,7 @@ const Trade = ({ selectedNft, isOwner, isListed, marketNft }: Props) => {
           </div>
         )}
         {/* Case when item is not listed and current user is owner */}
-        {isListed === "false" && isOwner === true && (
+        {isListed === "false" && isOwner && (
           <div
             onClick={() => {
               setShowModal(true);

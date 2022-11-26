@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useCallback, useMemo } from "react";
 import { CgArrowsExchangeV } from "react-icons/cg";
 import { AiOutlineDown, AiOutlineUp } from "react-icons/ai";
 import { useState } from "react";
 import { dummyEvents } from "../../static/dummyEvents";
 import { NFTProps } from "../../types";
 import EventItem from "./itemActivity/EventItem";
+import { ThirdwebSDK } from "@thirdweb-dev/sdk";
+import { useAddress } from "@thirdweb-dev/react";
 
 type Props = {};
 
@@ -28,7 +30,7 @@ const style = {
 
 const ItemActivity = ({ selectedNft }: NFTProps) => {
   const [toggle, setToggle] = useState(true);
-
+  
   return (
     <div className={style.wrapper}>
       <div className={style.title} onClick={() => setToggle(!toggle)}>

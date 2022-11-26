@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import React, { useMemo, useState, useEffect, useContext } from "react";
+import React, { useMemo, useState, useEffect, useContext, useCallback } from "react";
 import Header from "../../components/common/Header";
 import GenralDetails from "../../components/nfts/GenralDetails";
 import ItemActivity from "../../components/nfts/ItemActivity";
@@ -28,15 +28,6 @@ const NFTItem = () => {
   const [marketNft, setMarketNft] = useState<any>(null);
   // check if media is less than 700px
   const matches = useMediaQuery({ query: "(max-width: 700px)" });
-  // useEffect(() => {
-  //   if (window.innerWidth < 700) {
-  //     setIsMobile(true);
-  //   } else {
-  //     setIsMobile(false);
-  //   }
-  //   console.log("window.innerWidth", window.innerWidth);
-  // }, [matches]);
-
   useEffect(() => {
     if (listings?.length === 0 || !nftid || !selectedNft) return;
     (async () => {
@@ -63,6 +54,7 @@ const NFTItem = () => {
     );
     setSelectedNft(nft);
   }, [nfts]);
+
 
   return (
     <div>
