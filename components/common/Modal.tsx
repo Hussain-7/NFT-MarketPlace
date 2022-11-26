@@ -18,7 +18,7 @@ const CustomModal = ({
   const [price, setPrice] = React.useState<number>(0);
   return (
     <Modal show={toggle}>
-      <div className="flex flex-col justify-center items-center p-10 space-y-4 w-full mx-auto">
+      <div className="flex mt-[30vh] md:mt-0 flex-col justify-center items-center p-10 space-y-4 w-full mx-auto">
         <div className="text-3xl font-bold text-left w-full font-sans">
           List for sale
         </div>
@@ -44,23 +44,19 @@ const CustomModal = ({
 
         <div className="flex flex-col w-full">
           {" "}
-          <div className="rounded-md flex space-x-4 border-2 border-blue-600 w-full">
+          <div className="rounded-md flex space-x-4 border-2 border-blue-600 w-full justify-between">
             {" "}
             <input
               value={price}
               onChange={(e) => setPrice(parseFloat(e.target.value))}
               type="number"
               placeholder="Amout"
-              className="p-4 flex-1 border-none outline-none hover:outline-none
-						focus:outline-none focus:ring-0  rounded-md text-black text-lg"
+              className="w-20 md:w-auto flex-1 p-4 border-none outline-none hover:outline-none
+						focus:outline-none focus:ring-0 rounded-md text-black text-lg"
             />
-            {/* Create drop down menu for token name */}
-            <select
-              className="p-4 w-[20%] border-none outline-none  hover:outline-none
-						focus:outline-none focus:ring-0  rounded-md text-black"
-            >
-              <option value="FUSD">ETH</option>
-            </select>
+            <span className="w-fit p-4 border-none outline-none rounded-md text-black ml-auto">
+              ETH
+            </span>
           </div>
           <div className="text-gray-600 text-md font-normal">
             ${price > 0 ? price * 1100 : 0} Total
