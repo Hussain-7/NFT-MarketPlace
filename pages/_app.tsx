@@ -2,8 +2,9 @@ import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import { ChainId, ThirdwebProvider } from "@thirdweb-dev/react";
 import { MarketPlaceProvider } from "../context/MarketPlace";
-
+import { motion } from "framer-motion";
 import { QueryClient, QueryClientProvider } from "react-query";
+import Layout from "../components/common/Layout";
 
 // Initialze the client
 const queryClient = new QueryClient();
@@ -16,7 +17,10 @@ function MyApp({ Component, pageProps }: AppProps) {
     <ThirdwebProvider supportedChains={[activeChainId]}>
       <QueryClientProvider client={queryClient}>
         <MarketPlaceProvider>
-          <Component {...pageProps} />
+          <Layout>
+            {" "}
+            <Component {...pageProps} />
+          </Layout>
         </MarketPlaceProvider>
       </QueryClientProvider>
     </ThirdwebProvider>

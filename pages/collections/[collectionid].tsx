@@ -14,6 +14,7 @@ import { HiDotsVertical } from "react-icons/hi";
 import NFTCard from "../../components/collections/NFTCard";
 import Loader from "../../components/common/Loader";
 import { MarketPlaceContext } from "../../context/MarketPlace";
+import { motion } from "framer-motion";
 import {
   useActiveListings,
   useAddress,
@@ -131,8 +132,21 @@ const CollectionId = () => {
   }, [collectionid]);
 
   return (
-    <div className="overflow-hidden">
-      <Header />
+    <motion.div
+      initial={{
+        opacity: 0,
+        y: 20,
+      }}
+      animate={{
+        opacity: 1,
+        y: 0,
+      }}
+      exit={{
+        opacity: 0,
+        y: 20,
+      }}
+      className="overflow-hidden"
+    >
       <div className={style.bannerImageContainer}>
         <img
           className={style.bannerImage}
@@ -196,7 +210,6 @@ const CollectionId = () => {
             </div>
             <div className={style.collectionStat}>
               <div className={style.statValue}>
-                {/* {collection?.allOwners ? collection.allOwners.length : ""} */}
                 {owners ? owners.length : ""}
               </div>
               <div className={style.statName}>owners</div>
@@ -246,7 +259,7 @@ const CollectionId = () => {
           <Loader width={2} color="04111d" text={"Loading NFTs..."} />
         </div>
       )}
-    </div>
+    </motion.div>
   );
 };
 

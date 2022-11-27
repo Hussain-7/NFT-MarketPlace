@@ -1,5 +1,12 @@
 import { useRouter } from "next/router";
-import React, { useMemo, useState, useEffect, useContext, useCallback } from "react";
+import React, {
+  useMemo,
+  useState,
+  useEffect,
+  useContext,
+  useCallback,
+} from "react";
+import { motion } from "framer-motion";
 import Header from "../../components/common/Header";
 import GenralDetails from "../../components/nfts/GenralDetails";
 import ItemActivity from "../../components/nfts/ItemActivity";
@@ -55,10 +62,21 @@ const NFTItem = () => {
     setSelectedNft(nft);
   }, [nfts]);
 
-
   return (
-    <div>
-      <Header />
+    <motion.div
+      initial={{
+        opacity: 0,
+        y: 20,
+      }}
+      animate={{
+        opacity: 1,
+        y: 0,
+      }}
+      exit={{
+        opacity: 0,
+        y: 20,
+      }}
+    >
       <div className={style.wrapper}>
         <div className={style.container}>
           {matches && (
@@ -72,7 +90,6 @@ const NFTItem = () => {
               {!matches && (
                 <GenralDetails selectedNft={selectedNft} isOwner={isOwner} />
               )}
-
               <Trade
                 isListed={router?.query?.isListed}
                 isOwner={isOwner}
@@ -85,7 +102,7 @@ const NFTItem = () => {
           <ItemActivity selectedNft={selectedNft} />
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

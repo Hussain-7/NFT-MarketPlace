@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo } from "react";
+import React, { useCallback, useContext, useEffect, useMemo } from "react";
 import { CgArrowsExchangeV } from "react-icons/cg";
 import { AiOutlineDown, AiOutlineUp } from "react-icons/ai";
 import { useState } from "react";
@@ -30,6 +30,11 @@ const style = {
 };
 
 const ItemActivity = ({ selectedNft }: NFTProps) => {
+  useEffect(() => {
+    // filter events for current selected nft
+    console.log("selectedNft", selectedNft);
+    // console.log("event[0]", event[0]);
+  }, [selectedNft]);
   const [toggle, setToggle] = useState(true);
   const { events } = useContext(MarketPlaceContext);
   return (

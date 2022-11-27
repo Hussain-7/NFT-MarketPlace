@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { ThirdwebSDK } from "@thirdweb-dev/sdk";
 import { addresses } from "../../lib/constants";
-
+import { motion } from "framer-motion";
 import { BiImage, BiX } from "react-icons/bi";
 import Header from "../../components/common/Header";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -104,8 +104,21 @@ const index = (props: Props) => {
   };
 
   return (
-    <div>
-      <Header />
+    <motion.div
+      initial={{
+        opacity: 0,
+        y: 20,
+      }}
+      animate={{
+        opacity: 1,
+        y: 0,
+      }}
+      exit={{
+        opacity: 0,
+        y: 20,
+      }}
+      className="overflow-hidden"
+    >
       <Toaster position="bottom-center" reverseOrder={false} />
       <div className="w-[90%] md:w-[600px] flex flex-col space-y-10 mx-auto mt-20">
         <div className="text-[40px] font-bold text-white">Create New Item</div>
@@ -218,7 +231,7 @@ const index = (props: Props) => {
           </div>
         </form>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

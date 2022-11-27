@@ -1,5 +1,5 @@
 import { useAddress, useMetamask } from "@thirdweb-dev/react";
-
+import { motion } from "framer-motion";
 import type { NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
@@ -54,11 +54,23 @@ const Home: NextPage = () => {
   }, [address]);
 
   return (
-    <>
+    <motion.div
+      initial={{
+        opacity: 0,
+        y: 20,
+      }}
+      animate={{
+        opacity: 1,
+        y: 0,
+      }}
+      exit={{
+        opacity: 0,
+        y: 20,
+      }}
+    >
       <Toaster position="bottom-center" reverseOrder={false} />
       {address && !loading ? (
         <>
-          <Header />
           <Hero />
         </>
       ) : (
@@ -75,7 +87,7 @@ const Home: NextPage = () => {
           </div>
         </div>
       )}
-    </>
+    </motion.div>
   );
 };
 

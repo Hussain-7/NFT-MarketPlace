@@ -1,6 +1,7 @@
-import { ContractEvent } from "@thirdweb-dev/sdk";
-import React from "react";
+import { ContractEvent, NFT } from "@thirdweb-dev/sdk";
+import React, { useEffect } from "react";
 import { BsFillCartFill } from "react-icons/bs";
+import { addresses } from "../../../lib/constants";
 
 const style = {
   eventItem: `flex px-4 py-5 font-medium`,
@@ -15,6 +16,15 @@ const style = {
 
 type Props = {
   event: ContractEvent<Record<string, any>>;
+};
+const getDaysAgo = (date: Date) => {
+  const now = new Date();
+  const diff = now.getTime() - date.getTime();
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  if (days == 0) {
+    return "Today";
+  } 
+  return `${days} days ago`;
 };
 
 const EventItem = ({ event }: Props) => {
@@ -45,9 +55,15 @@ const EventItem = ({ event }: Props) => {
         {event.data?.lister?.slice(0, 10)}
       </div>
       <div className={`${style.accent} flex-[3]`}>
-        {event.data?.buyer ? event.data?.buyer?.slice(0, 10) : "-"}
+        {event.data?.buyer
+          ? event.data?.buyer?.slice(0, 10)
+          : addresses.MarketPlaceContract_Address.slice(0, 10)}
       </div>
-      <div className={`${style.accent} flex-[2]`}>2 months ago</div>
+      <div className={`${style.accent} flex-[2]`}>
+        {event.data.listing
+          ? getDaysAgo(new Date(parseInt(event?.data?.listing[4]._hex) * 1000))
+          : "-"}
+      </div>
     </div>
   );
 };

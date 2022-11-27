@@ -35,9 +35,7 @@ const Header = () => {
 
   const { user } = useContext(MarketPlaceContext);
   const [showMenu, setShowMenu] = useState(false);
-  useEffect(() => {
-    if (!address) router.push("/", undefined, { shallow: true });
-  }, [address]);
+
   const Logout = () => {
     disconnect();
     router.push("/");

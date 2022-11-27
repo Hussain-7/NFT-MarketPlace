@@ -6,6 +6,7 @@ import React, {
   useCallback,
   useContext,
 } from "react";
+import { motion } from "framer-motion";
 import { client } from "../../lib/sanityClient";
 import Header from "../../components/common/Header";
 import { CgWebsite } from "react-icons/cg";
@@ -77,8 +78,21 @@ const Profile = () => {
   } = useContext(MarketPlaceContext);
 
   return (
-    <div className="overflow-hidden">
-      <Header />
+    <motion.div
+      initial={{
+        opacity: 0,
+        y: 20,
+      }}
+      animate={{
+        opacity: 1,
+        y: 0,
+      }}
+      exit={{
+        opacity: 0,
+        y: 20,
+      }}
+      className="overflow-hidden"
+    >
       <div className={style.bannerImageContainer}>
         <img
           className={style.bannerImage}
@@ -214,7 +228,7 @@ const Profile = () => {
           <Loader width={2} color="04111d" text={"Loading NFTs..."} />
         </div>
       )}
-    </div>
+    </motion.div>
   );
 };
 
