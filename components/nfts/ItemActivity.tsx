@@ -8,6 +8,12 @@ import EventItem from "./itemActivity/EventItem";
 import { ThirdwebSDK } from "@thirdweb-dev/sdk";
 import { useAddress } from "@thirdweb-dev/react";
 import { MarketPlaceContext } from "../../context/MarketPlace";
+import {
+  IoIosArrowDropdownCircle,
+  IoIosArrowDropupCircle,
+} from "react-icons/io";
+import { FiFilter } from "react-icons/fi";
+import useMediaQuery from "../../hooks/useMediaQuery";
 
 type Props = {};
 
@@ -30,12 +36,10 @@ const style = {
 };
 
 const ItemActivity = ({ selectedNft }: NFTProps) => {
-  useEffect(() => {
-    // filter events for current selected nft
-    console.log("selectedNft", selectedNft);
-    // console.log("event[0]", event[0]);
-  }, [selectedNft]);
-  const [toggle, setToggle] = useState(true);
+  const [show, setShow] = useState(false);
+  const matches = useMediaQuery({ query: "(max-width: 700px)" });
+
+  const [toggle, setToggle] = useState(false);
   const { events } = useContext(MarketPlaceContext);
   return (
     <div className={style.wrapper}>
@@ -47,7 +51,7 @@ const ItemActivity = ({ selectedNft }: NFTProps) => {
           Item Activity
         </div>
         <div className={style.titleRight}>
-          {toggle ? <AiOutlineUp /> : <AiOutlineDown />}
+          {toggle ? <IoIosArrowDropupCircle /> : <IoIosArrowDropdownCircle />}
         </div>
       </div>
       {toggle && (
@@ -56,16 +60,22 @@ const ItemActivity = ({ selectedNft }: NFTProps) => {
             <div className={style.filterTitle}>Filter</div>
             <div className={style.filterIcon}>
               {" "}
-              <AiOutlineDown />{" "}
+              <FiFilter />{" "}
             </div>
           </div>
-          <div className={style.tableHeader}>
-            <div className={`${style.tableHeaderElement} flex-[2]`}>Event</div>
-            <div className={`${style.tableHeaderElement} flex-[2]`}>Price</div>
-            <div className={`${style.tableHeaderElement} flex-[3]`}>From</div>
-            <div className={`${style.tableHeaderElement} flex-[3]`}>To</div>
-            <div className={`${style.tableHeaderElement} flex-[2]`}>Date</div>
-          </div>
+          {!matches && (
+            <div className={style.tableHeader}>
+              <div className={`${style.tableHeaderElement} flex-[2]`}>
+                Event
+              </div>
+              <div className={`${style.tableHeaderElement} flex-[2]`}>
+                Price
+              </div>
+              <div className={`${style.tableHeaderElement} flex-[3]`}>From</div>
+              <div className={`${style.tableHeaderElement} flex-[3]`}>To</div>
+              <div className={`${style.tableHeaderElement} flex-[2]`}>Date</div>
+            </div>
+          )}
           {events?.map((event, id) => (
             <EventItem key={id} event={event} />
           ))}
