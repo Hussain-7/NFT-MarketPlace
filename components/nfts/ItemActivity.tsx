@@ -14,7 +14,7 @@ import {
 } from "react-icons/io";
 import { FiFilter } from "react-icons/fi";
 import useMediaQuery from "../../hooks/useMediaQuery";
-
+import { motion } from "framer-motion";
 type Props = {};
 
 const style = {
@@ -55,7 +55,12 @@ const ItemActivity = ({ selectedNft }: NFTProps) => {
         </div>
       </div>
       {toggle && (
-        <div className={style.activityTable}>
+        <motion.div
+          initial={{ height: 0 }}
+          animate={{ height: "auto" }}
+          exit={{ height: 0 }}
+          className={style.activityTable}
+        >
           <div className={style.filter}>
             <div className={style.filterTitle}>Filter</div>
             <div className={style.filterIcon}>
@@ -79,7 +84,7 @@ const ItemActivity = ({ selectedNft }: NFTProps) => {
           {events?.map((event, id) => (
             <EventItem key={id} event={event} />
           ))}
-        </div>
+        </motion.div>
       )}
     </div>
   );
