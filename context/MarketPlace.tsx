@@ -21,6 +21,7 @@ export const MarketPlaceContext = createContext<ContextType>({
   userNfts: [],
   userListings: [],
   events: [],
+  volumeTraded: 0,
   nftsLoaded: false,
   activeListingsLoaded: false,
   userNftsLoaded: false,
@@ -38,6 +39,7 @@ export const MarketPlaceProvider = ({ children }: Props) => {
     address: "",
   });
   const [userListings, setUserListings] = useState<any[]>([]);
+  const [volumeTraded, setVolumeTraded] = useState(0);
   useEffect(() => {
     if (address) {
       setUser({
@@ -71,26 +73,22 @@ export const MarketPlaceProvider = ({ children }: Props) => {
   }, []);
 
   const getAllNfts = useCallback(async () => {
-    // return [];
     if (!nftContract) return [];
     return await (await nftContract)!.getAll();
     // @ts-ignore
   }, [nftContract, address]);
   const getUserNfts = useCallback(async () => {
-    // return [];
     if (!nftContract) return [];
     return await (await nftContract)!.getOwned(address);
     // @ts-ignore
   }, [nftContract, address]);
   const getActiveListings = useCallback(async () => {
-    // return [];
     console.log("getActiveListings called:", marketPlaceContract);
     if (!marketPlaceContract) return [];
     return await (await marketPlaceContract)!.getActiveListings();
   }, [marketPlaceContract, address]);
 
   const getAllMarkeplaceEvents = useCallback(async () => {
-    // return [];
     if (!nftContract || !address) return [];
     const newSaleEvents = await (await marketPlaceContract)!.events.getEvents(
       "NewSale"
@@ -101,9 +99,12 @@ export const MarketPlaceProvider = ({ children }: Props) => {
     const events = [...newSaleEvents, ...ListingAddedEvents];
     console.log("events", events);
     // find volume volumeTraded
-    // const volumeTraded = events.reduce((acc, event) => {
-    //   return acc + event.returnValues.price;
-    // }, 0);
+    setVolumeTraded(
+      newSaleEvents.reduce((acc, event) => {
+        return acc + parseInt(event.data.totalPricePaid._hex) / 10 ** 18;
+      }, 0)
+    );
+    console.log("volumeTraded", volumeTraded);
     return events;
   }, [nftContract, address]);
 
@@ -160,6 +161,7 @@ export const MarketPlaceProvider = ({ children }: Props) => {
         listings,
         userNfts,
         userListings,
+        volumeTraded,
         events,
         nftsLoaded: !nftsLoaded,
         activeListingsLoaded: !activeListingsLoaded,

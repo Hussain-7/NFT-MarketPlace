@@ -62,6 +62,7 @@ export type ContextType = {
   listings: (AuctionListing | DirectListing)[] | undefined;
   userListings: (AuctionListing | DirectListing)[] | undefined;
   userNfts: NFT[] | undefined;
+  volumeTraded: number;
   nftsLoaded: boolean;
   activeListingsLoaded: boolean;
   userNftsLoaded: boolean;

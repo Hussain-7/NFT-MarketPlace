@@ -78,8 +78,14 @@ const CollectionId = () => {
     description: "",
   });
   // use activeListing hook from ThirdwebSDK
-  const { nfts, listings, nftsLoaded, activeListingsLoaded } =
-    useContext(MarketPlaceContext);
+  const {
+    nfts,
+    listings,
+    nftsLoaded,
+    activeListingsLoaded,
+    volumeTraded,
+    events,
+  } = useContext(MarketPlaceContext);
   const [listedNfts, setListedNfts] = useState<any[]>([]);
   useEffect(() => {
     // finds unique owners count from list of nfts
@@ -88,7 +94,7 @@ const CollectionId = () => {
         return parseFloat(curr!?.buyoutCurrencyValuePerToken.displayValue);
       }
       return acc;
-    }, Infinity);
+    }, 0);
     if (lowestPriceofListedNfts) setFloorPrice(lowestPriceofListedNfts);
     const uniqueOwners =
       listings
@@ -232,7 +238,7 @@ const CollectionId = () => {
                   alt="eth"
                   className={style.ethLogo}
                 />
-                {collection?.volumeTraded}.5K
+                {volumeTraded !== 0 ? volumeTraded : 0}
               </div>
               <div className={style.statName}>volume traded</div>
             </div>
