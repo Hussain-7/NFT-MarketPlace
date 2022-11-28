@@ -38,8 +38,8 @@ type Props = {
 };
 
 const Trade = ({ selectedNft, isOwner, isListed, marketNft }: Props) => {
-  // const { refetchNfts, refetchUserNfts, refetchActiveListings } =
-  //   useContext(MarketPlaceContext);
+  const { refetchNfts, refetchUserNfts, refetchActiveListings } =
+    useContext(MarketPlaceContext);
   const signer = useSigner();
   const [isDone, setIsDone] = useState(false);
   const [enableButton, setEnableButton] = useState(false);
@@ -86,6 +86,10 @@ const Trade = ({ selectedNft, isOwner, isListed, marketNft }: Props) => {
         listingId,
         quantityDesired
       );
+      if (refetchUserNfts) {
+        const result = await refetchUserNfts();
+        console.log("result", result);
+      }
       successMsg();
       setLoading(false);
     } catch (err) {
@@ -137,10 +141,10 @@ const Trade = ({ selectedNft, isOwner, isListed, marketNft }: Props) => {
       const listingId = tx.id; // the id of the newly created listing
       console.log("receipt", receipt);
       console.log("listingId", listingId);
-      // if (refetchActiveListings) {
-      //   const result = await refetchActiveListings();
-      //   console.log("result", result);
-      // }
+      if (refetchActiveListings) {
+        const result = await refetchActiveListings();
+        console.log("result", result);
+      }
       successMsg("Listing successful!");
       setLoading(false);
       setShowModal(false);
