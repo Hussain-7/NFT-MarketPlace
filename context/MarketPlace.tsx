@@ -131,6 +131,7 @@ export const MarketPlaceProvider = ({ children }: Props) => {
     enabled: !!address,
   });
   const {
+    status,
     data: listings,
     error: activeListingsErrors,
     isLoading: activeListingsLoaded,
@@ -165,11 +166,12 @@ export const MarketPlaceProvider = ({ children }: Props) => {
     console.log("userNfts", userNfts);
     console.log("userListings", userListings);
     console.log("listings", listings);
+    console.log("status", status);
     console.log("isloaded", nftsLoaded, userNftsLoaded, activeListingsLoaded);
     console.log("error", nftsLoadingError, userNftsError, activeListingsErrors);
     console.log("events", events);
     console.log("============================================================");
-  }, [nfts, userNfts, listings, events]);
+  }, [nfts, userNfts, listings, events, status]);
   return (
     <MarketPlaceContext.Provider
       value={{
@@ -181,7 +183,7 @@ export const MarketPlaceProvider = ({ children }: Props) => {
         listedNfts,
         volumeTraded,
         events,
-        nftsLoaded: !nftsLoaded,
+        nftsLoaded: status === "success",
         activeListingsLoaded: !activeListingsLoaded,
         userNftsLoaded: !userNftsLoaded,
         refetchNfts,
