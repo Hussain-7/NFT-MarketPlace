@@ -59,11 +59,10 @@ const Header = () => {
       <div className={style.headerItems}>
         <Link
           href="/collections/0x97c4ffB08C8438e671951Ae957Dc77c1f0777D75"
-          shallow={true}
         >
           <div className={style.headerItem}> Collections </div>
         </Link>
-        <Link href="/create" shallow={true}>
+        <Link href="/create">
           <div className={style.headerItem}> Create </div>
         </Link>
         <div
@@ -93,7 +92,6 @@ const Header = () => {
                     <li>
                       <Link
                         href={`/profile/${user.address}`}
-                        shallow={true}
                         className="py-2 px-4 hover:bg-[#1b2e41] dark:hover:bg-gray-600 dark:hover:text-white flex flex-row items-center justify-start"
                       >
                         <BiUser fontSize={20} className="mr-3" />{" "}

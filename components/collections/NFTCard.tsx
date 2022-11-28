@@ -51,10 +51,7 @@ const NFTCard = ({ nftItem, listings, title }: NFTCardProps) => {
             pathname: `/nfts/${nftItem.metadata.id}`,
             query: { isListed: isListed },
           },
-          undefined,
-          {
-            shallow: true,
-          }
+          undefined
         );
       }}
     >

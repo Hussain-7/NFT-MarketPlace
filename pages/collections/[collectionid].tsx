@@ -91,13 +91,12 @@ const CollectionId = () => {
     );
   }, [listings, nfts]);
   const floorPrice = useMemo(() => {
-    const price = listings?.reduce((acc, listing) => {
-      if (parseFloat(listing.buyoutCurrencyValuePerToken.displayValue) < acc) {
-        return parseFloat(listing.buyoutCurrencyValuePerToken.displayValue);
-      }
-      return 0;
-    }, Infinity);
-    return price === Infinity ? 0 : price;
+    // map listings to listing.buyoutCurrencyValuePerToken.displayValue
+    const prices = listings?.map((listing) =>
+      parseFloat(listing.buyoutCurrencyValuePerToken.displayValue)
+    );
+    if (prices) return Math.min(...prices);
+    return 0;
   }, [listings]);
   const fetchCollectionData = useCallback(
     async (sanityClient = client) => {
