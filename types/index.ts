@@ -59,9 +59,10 @@ export type ContextType = {
     address: string;
   };
   nfts: NFT[] | undefined;
-  listings: (AuctionListing | DirectListing)[] | null | undefined;
+  listings: (AuctionListing | DirectListing)[] | undefined;
   userListings: (AuctionListing | DirectListing)[] | undefined;
   userNfts: NFT[] | undefined;
+  listedNfts: NFT[] | undefined;
   volumeTraded: number;
   floorPrice?: number;
   nftsLoaded: boolean;

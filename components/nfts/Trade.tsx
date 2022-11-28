@@ -30,7 +30,7 @@ const style = {
 };
 
 type Props = {
-  listings: (AuctionListing | DirectListing)[] | undefined;
+  listings: (AuctionListing | DirectListing)[] | null | undefined;
   selectedNft: NFT;
   isOwner: boolean;
   isListed: string | string[] | undefined;

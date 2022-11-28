@@ -1,4 +1,10 @@
-import { useAddress, useContract, useSDK, useUser } from "@thirdweb-dev/react";
+import {
+  useActiveListings,
+  useAddress,
+  useContract,
+  useSDK,
+  useUser,
+} from "@thirdweb-dev/react";
 import { ThirdwebSDK } from "@thirdweb-dev/sdk";
 import { SocketAddress } from "net";
 import { NextComponentType, NextPageContext } from "next";
@@ -19,6 +25,7 @@ export const MarketPlaceContext = createContext<ContextType>({
   nfts: [],
   listings: [],
   userNfts: [],
+  listedNfts: [],
   userListings: [],
   events: [],
   floorPrice: 0,
@@ -73,23 +80,34 @@ export const MarketPlaceProvider = ({ children }: Props) => {
     return contract;
   }, []);
 
-  const getAllNfts = useCallback(async () => {
+  const { contract: marketPlaceContractCustom } = useContract(
+    "0xfe64bfac909d23027691074e833dcb29a3233523",
+    "marketplace"
+  );
+  const { data } = useActiveListings(marketPlaceContractCustom);
+  useEffect(() => {
+    console.log("listingsCustom", data);
+  }, [data]);
+
+  // const customListings = useActiveListings(marketPlaceContract);
+  const getAllNfts = async () => {
     // if (!nftContract) return [];
     return await (await nftContract)!.getAll();
     // @ts-ignore
-  }, [nftContract, address]);
-  const getUserNfts = useCallback(async () => {
+  };
+  const getUserNfts = async () => {
     // if (!nftContract) return [];
     return await (await nftContract)!.getOwned(address);
     // @ts-ignore
-  }, [nftContract, address]);
-  const getActiveListings = useCallback(async () => {
-    if (!address && !marketPlaceContract) return null;
+  };
+  const getActiveListings = async () => {
+    if (!address && !marketPlaceContract) return [];
     const result = await (await marketPlaceContract)!.getActiveListings();
+    // const result = await marketPlaceContract.getActiveListings();
     return result;
-  }, [marketPlaceContract, address]);
+  };
 
-  const getAllMarkeplaceEvents = useCallback(async () => {
+  const getAllMarkeplaceEvents = async () => {
     if (!nftContract || !address) return [];
     const newSaleEvents = await (await marketPlaceContract)!.events.getEvents(
       "NewSale"
@@ -107,7 +125,7 @@ export const MarketPlaceProvider = ({ children }: Props) => {
     );
     console.log("volumeTraded", volumeTraded);
     return events;
-  }, [nftContract, address]);
+  };
   const {
     data: nfts,
     error: nftsLoadingError,
@@ -145,6 +163,12 @@ export const MarketPlaceProvider = ({ children }: Props) => {
     }
   }, [listings, address]);
 
+  const listedNfts = useMemo(() => {
+    return nfts?.filter((nft) =>
+      listings?.find((listing) => listing.asset.id === nft.metadata.id)
+    );
+  }, [listings, nfts]);
+
   useEffect(() => {
     console.log("============================================================");
     console.log("nfts", nfts);
@@ -164,6 +188,7 @@ export const MarketPlaceProvider = ({ children }: Props) => {
         listings,
         userNfts,
         userListings,
+        listedNfts,
         volumeTraded,
         events,
         nftsLoaded: !nftsLoaded,

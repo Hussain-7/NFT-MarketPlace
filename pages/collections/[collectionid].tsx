@@ -75,8 +75,14 @@ const CollectionId = () => {
     description: "",
   });
   // use activeListing hook from ThirdwebSDK
-  const { nfts, listings, nftsLoaded, activeListingsLoaded, volumeTraded } =
-    useContext(MarketPlaceContext);
+  const {
+    nfts,
+    listings,
+    nftsLoaded,
+    activeListingsLoaded,
+    volumeTraded,
+    listedNfts,
+  } = useContext(MarketPlaceContext);
 
   const owners = useMemo(() => {
     return (
@@ -85,11 +91,11 @@ const CollectionId = () => {
         .filter((value, index, self) => self.indexOf(value) === index) || []
     );
   }, [listings]);
-  const listedNfts = useMemo(() => {
-    return nfts?.filter((nft) =>
-      listings?.find((listing) => listing.asset.id === nft.metadata.id)
-    );
-  }, [listings, nfts]);
+  // const listedNfts = useMemo(() => {
+  //   return nfts?.filter((nft) =>
+  //     listings?.find((listing) => listing.asset.id === nft.metadata.id)
+  //   );
+  // }, [listings, nfts]);
   const floorPrice = useMemo(() => {
     // map listings to listing.buyoutCurrencyValuePerToken.displayValue
     const prices = listings?.map((listing) =>
