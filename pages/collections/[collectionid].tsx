@@ -91,11 +91,7 @@ const CollectionId = () => {
         .filter((value, index, self) => self.indexOf(value) === index) || []
     );
   }, [listings]);
-  // const listedNfts = useMemo(() => {
-  //   return nfts?.filter((nft) =>
-  //     listings?.find((listing) => listing.asset.id === nft.metadata.id)
-  //   );
-  // }, [listings, nfts]);
+
   const floorPrice = useMemo(() => {
     // map listings to listing.buyoutCurrencyValuePerToken.displayValue
     const prices = listings?.map((listing) =>
