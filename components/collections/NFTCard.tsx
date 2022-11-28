@@ -7,7 +7,7 @@ import { AuctionListing, DirectListing, NFT } from "@thirdweb-dev/sdk";
 type NFTCardProps = {
   nftItem: NFT;
   title: string;
-  listings: (AuctionListing | DirectListing)[] | undefined;
+  listings: (AuctionListing | DirectListing)[] | null | undefined;
 };
 
 const style = {

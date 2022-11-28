@@ -62,7 +62,6 @@ const CollectionId = () => {
   const router = useRouter();
   const { collectionid } = router.query;
   console.log(collectionid);
-  const [owners, setOwners] = useState<string[]>([]);
   const [collection, setCollection] = useState<collectionType>({
     imageUrl: "https://via.placeholder.com/200",
     bannerImageUrl: "https://via.placeholder.com/200",
@@ -76,32 +75,30 @@ const CollectionId = () => {
     description: "",
   });
   // use activeListing hook from ThirdwebSDK
-  const { nfts, listings, nftsLoaded, activeListingsLoaded } =
+  const { nfts, listings, nftsLoaded, activeListingsLoaded, volumeTraded } =
     useContext(MarketPlaceContext);
-  // const [listedNfts, setListedNfts] = useState<any[]>([]);
-  useEffect(() => {
-    // finds unique owners count from list of nfts
-    const uniqueOwners =
+
+  const owners = useMemo(() => {
+    return (
       listings
         ?.map((nft) => nft.sellerAddress)
-        .filter((value, index, self) => self.indexOf(value) === index) || [];
-    setOwners(uniqueOwners);
-    // finds all nfts if nft.metadata.id is present in listings.asset.id
-    // map all nfts to there ids
-    // const listedNfts = nfts?.filter((nft) =>
-    //   listings?.find((listing) => listing.asset.id === nft.metadata.id)
-    // );
-    // console.log("listings", listings);
-    // console.log("listedNfts", listedNfts);
-    // if (listedNfts) {
-    //   setListedNfts(listedNfts);
-    // }
-  }, [listings, nfts, activeListingsLoaded, nftsLoaded]);
+        .filter((value, index, self) => self.indexOf(value) === index) || []
+    );
+  }, [listings]);
   const listedNfts = useMemo(() => {
     return nfts?.filter((nft) =>
       listings?.find((listing) => listing.asset.id === nft.metadata.id)
     );
   }, [listings, nfts]);
+  const floorPrice = useMemo(() => {
+    const price = listings?.reduce((acc, listing) => {
+      if (parseFloat(listing.buyoutCurrencyValuePerToken.displayValue) < acc) {
+        return parseFloat(listing.buyoutCurrencyValuePerToken.displayValue);
+      }
+      return 0;
+    }, Infinity);
+    return price === Infinity ? 0 : price;
+  }, [listings]);
   const fetchCollectionData = useCallback(
     async (sanityClient = client) => {
       const query = `*[_type == "marketItems" && contractAddress == "${collectionid}" ] {
@@ -220,7 +217,7 @@ const CollectionId = () => {
                   alt="eth"
                   className={style.ethLogo}
                 />
-                {collection?.floorPrice}
+                {floorPrice ? floorPrice : 0}
               </div>
               <div className={style.statName}>floor price</div>
             </div>
@@ -231,7 +228,7 @@ const CollectionId = () => {
                   alt="eth"
                   className={style.ethLogo}
                 />
-                {collection?.volumeTraded}.5K
+                {volumeTraded || 0}
               </div>
               <div className={style.statName}>volume traded</div>
             </div>

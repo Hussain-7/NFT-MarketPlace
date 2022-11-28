@@ -21,6 +21,7 @@ export const MarketPlaceContext = createContext<ContextType>({
   userNfts: [],
   userListings: [],
   events: [],
+  floorPrice: 0,
   volumeTraded: 0,
   nftsLoaded: false,
   activeListingsLoaded: false,
@@ -83,7 +84,6 @@ export const MarketPlaceProvider = ({ children }: Props) => {
     // @ts-ignore
   }, [nftContract, address]);
   const getActiveListings = useCallback(async () => {
-    // if (!marketPlaceContract) return [];
     if (!address && !marketPlaceContract) return null;
     const result = await (await marketPlaceContract)!.getActiveListings();
     return result;
@@ -108,7 +108,6 @@ export const MarketPlaceProvider = ({ children }: Props) => {
     console.log("volumeTraded", volumeTraded);
     return events;
   }, [nftContract, address]);
-
   const {
     data: nfts,
     error: nftsLoadingError,
@@ -126,7 +125,6 @@ export const MarketPlaceProvider = ({ children }: Props) => {
   const {
     data: listings,
     error: activeListingsErrors,
-    // isLoading: activeListingsLoaded,
     isLoading: activeListingsLoaded,
     refetch: refetchActiveListings,
   } = useQuery("getActiveListings", getActiveListings);
@@ -149,7 +147,10 @@ export const MarketPlaceProvider = ({ children }: Props) => {
 
   useEffect(() => {
     console.log("============================================================");
-    console.log("data", nfts, userNfts, userListings, listings);
+    console.log("nfts", nfts);
+    console.log("userNfts", userNfts);
+    console.log("userListings", userListings);
+    console.log("listings", listings);
     console.log("isloaded", nftsLoaded, userNftsLoaded, activeListingsLoaded);
     console.log("error", nftsLoadingError, userNftsError, activeListingsErrors);
     console.log("events", events);

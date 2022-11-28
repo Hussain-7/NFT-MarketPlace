@@ -59,10 +59,11 @@ export type ContextType = {
     address: string;
   };
   nfts: NFT[] | undefined;
-  listings: (AuctionListing | DirectListing)[] | undefined;
+  listings: (AuctionListing | DirectListing)[] | null | undefined;
   userListings: (AuctionListing | DirectListing)[] | undefined;
   userNfts: NFT[] | undefined;
   volumeTraded: number;
+  floorPrice?: number;
   nftsLoaded: boolean;
   activeListingsLoaded: boolean;
   userNftsLoaded: boolean;
@@ -70,7 +71,7 @@ export type ContextType = {
   refetchActiveListings?: <TPageData>(
     options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
   ) => Promise<
-    QueryObserverResult<(AuctionListing | DirectListing)[], unknown>
+    QueryObserverResult<(AuctionListing | DirectListing)[] | null, unknown>
   >;
   refetchUserNfts?: <TPageData>(
     options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
