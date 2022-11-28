@@ -1,4 +1,4 @@
-import { useAddress, useSDK, useUser } from "@thirdweb-dev/react";
+import { useAddress, useContract, useSDK, useUser } from "@thirdweb-dev/react";
 import { ThirdwebSDK } from "@thirdweb-dev/sdk";
 import { SocketAddress } from "net";
 import { NextComponentType, NextPageContext } from "next";
@@ -33,6 +33,13 @@ type Props = {
 
 export const MarketPlaceProvider = ({ children }: Props) => {
   const address = useAddress();
+  // const { contract } = useContract(
+  //   "0xFE64BFAC909d23027691074E833DcB29a3233523",
+  //   "marketplace"
+  // );
+  // useEffect(() => {
+  //   console.log("contract", contract);
+  // }, [contract]);
   const [user, setUser] = useState<{
     address: string;
   }>({
@@ -73,19 +80,20 @@ export const MarketPlaceProvider = ({ children }: Props) => {
   }, []);
 
   const getAllNfts = useCallback(async () => {
-    if (!nftContract) return [];
+    // if (!nftContract) return [];
     return await (await nftContract)!.getAll();
     // @ts-ignore
   }, [nftContract, address]);
   const getUserNfts = useCallback(async () => {
-    if (!nftContract) return [];
+    // if (!nftContract) return [];
     return await (await nftContract)!.getOwned(address);
     // @ts-ignore
   }, [nftContract, address]);
   const getActiveListings = useCallback(async () => {
-    console.log("getActiveListings called:", marketPlaceContract);
-    if (!marketPlaceContract) return [];
-    return await (await marketPlaceContract)!.getActiveListings();
+    // if (!marketPlaceContract) return [];
+    console.log("running getActiveListings,", marketPlaceContract);
+    const result = await (await marketPlaceContract)!.getActiveListings();
+    return result;
   }, [marketPlaceContract, address]);
 
   const getAllMarkeplaceEvents = useCallback(async () => {
@@ -125,6 +133,7 @@ export const MarketPlaceProvider = ({ children }: Props) => {
   const {
     data: listings,
     error: activeListingsErrors,
+    // isLoading: activeListingsLoaded,
     isLoading: activeListingsLoaded,
     refetch: refetchActiveListings,
   } = useQuery("getActiveListings", getActiveListings);

@@ -14,7 +14,6 @@ import { HiDotsVertical } from "react-icons/hi";
 import NFTCard from "../../components/collections/NFTCard";
 import Loader from "../../components/common/Loader";
 import { MarketPlaceContext } from "../../context/MarketPlace";
-import { motion } from "framer-motion";
 import {
   useActiveListings,
   useAddress,
@@ -25,7 +24,6 @@ import {
   useUser,
 } from "@thirdweb-dev/react";
 import { addresses } from "../../lib/constants";
-import { AuctionListing, DirectListing } from "@thirdweb-dev/sdk";
 const style = {
   bannerImageContainer: ` lg:h-[20rem] w-screen overflow-hidden flex justify-center items-center`,
   bannerImage: `w-full object-cover`,
@@ -64,7 +62,6 @@ const CollectionId = () => {
   const { collectionid } = router.query;
   console.log(collectionid);
   const [owners, setOwners] = useState<string[]>([]);
-  const [floorPrice, setFloorPrice] = useState<number>(0);
   const [collection, setCollection] = useState<collectionType>({
     imageUrl: "https://via.placeholder.com/200",
     bannerImageUrl: "https://via.placeholder.com/200",
@@ -78,24 +75,11 @@ const CollectionId = () => {
     description: "",
   });
   // use activeListing hook from ThirdwebSDK
-  const {
-    nfts,
-    listings,
-    nftsLoaded,
-    activeListingsLoaded,
-    volumeTraded,
-    events,
-  } = useContext(MarketPlaceContext);
+  const { nfts, listings, nftsLoaded, activeListingsLoaded } =
+    useContext(MarketPlaceContext);
   const [listedNfts, setListedNfts] = useState<any[]>([]);
   useEffect(() => {
     // finds unique owners count from list of nfts
-    const lowestPriceofListedNfts = listings?.reduce((acc, curr) => {
-      if (parseFloat(curr!?.buyoutCurrencyValuePerToken.displayValue) < acc) {
-        return parseFloat(curr!?.buyoutCurrencyValuePerToken.displayValue);
-      }
-      return acc;
-    }, 0);
-    if (lowestPriceofListedNfts) setFloorPrice(lowestPriceofListedNfts);
     const uniqueOwners =
       listings
         ?.map((nft) => nft.sellerAddress)
@@ -106,10 +90,12 @@ const CollectionId = () => {
     const listedNfts = nfts?.filter((nft) =>
       listings?.find((listing) => listing.asset.id === nft.metadata.id)
     );
+    console.log("listings", listings);
+    console.log("listedNfts", listedNfts);
     if (listedNfts) {
       setListedNfts(listedNfts);
     }
-  }, [listings, nfts]);
+  }, [listings, nfts, activeListingsLoaded, nftsLoaded]);
   const fetchCollectionData = useCallback(
     async (sanityClient = client) => {
       const query = `*[_type == "marketItems" && contractAddress == "${collectionid}" ] {
@@ -138,21 +124,7 @@ const CollectionId = () => {
   }, [collectionid]);
 
   return (
-    <motion.div
-      initial={{
-        opacity: 0,
-        y: 20,
-      }}
-      animate={{
-        opacity: 1,
-        y: 0,
-      }}
-      exit={{
-        opacity: 0,
-        y: 20,
-      }}
-      className="overflow-hidden"
-    >
+    <div className="overflow-hidden">
       <div className={style.bannerImageContainer}>
         <img
           className={style.bannerImage}
@@ -216,6 +188,7 @@ const CollectionId = () => {
             </div>
             <div className={style.collectionStat}>
               <div className={style.statValue}>
+                {/* {collection?.allOwners ? collection.allOwners.length : ""} */}
                 {owners ? owners.length : ""}
               </div>
               <div className={style.statName}>owners</div>
@@ -227,7 +200,7 @@ const CollectionId = () => {
                   alt="eth"
                   className={style.ethLogo}
                 />
-                {floorPrice}
+                {collection?.floorPrice}
               </div>
               <div className={style.statName}>floor price</div>
             </div>
@@ -238,7 +211,7 @@ const CollectionId = () => {
                   alt="eth"
                   className={style.ethLogo}
                 />
-                {volumeTraded !== 0 ? volumeTraded : 0}
+                {collection?.volumeTraded}.5K
               </div>
               <div className={style.statName}>volume traded</div>
             </div>
@@ -250,7 +223,7 @@ const CollectionId = () => {
       </div>
       {nftsLoaded && activeListingsLoaded ? (
         <div className="my-[3rem] grid justify-center items-center grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-          {nfts!.length > 0 &&
+          {listedNfts!.length > 0 &&
             listedNfts?.map((nftItem, id) => (
               <NFTCard
                 key={id}
@@ -265,7 +238,7 @@ const CollectionId = () => {
           <Loader width={2} color="04111d" text={"Loading NFTs..."} />
         </div>
       )}
-    </motion.div>
+    </div>
   );
 };
 
