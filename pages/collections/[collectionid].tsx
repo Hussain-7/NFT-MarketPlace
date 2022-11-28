@@ -6,6 +6,7 @@ import React, {
   useCallback,
   useContext,
 } from "react";
+import { motion } from "framer-motion";
 import { client } from "../../lib/sanityClient";
 import Header from "../../components/common/Header";
 import { CgWebsite } from "react-icons/cg";
@@ -77,7 +78,7 @@ const CollectionId = () => {
   // use activeListing hook from ThirdwebSDK
   const { nfts, listings, nftsLoaded, activeListingsLoaded } =
     useContext(MarketPlaceContext);
-  const [listedNfts, setListedNfts] = useState<any[]>([]);
+  // const [listedNfts, setListedNfts] = useState<any[]>([]);
   useEffect(() => {
     // finds unique owners count from list of nfts
     const uniqueOwners =
@@ -87,15 +88,20 @@ const CollectionId = () => {
     setOwners(uniqueOwners);
     // finds all nfts if nft.metadata.id is present in listings.asset.id
     // map all nfts to there ids
-    const listedNfts = nfts?.filter((nft) =>
+    // const listedNfts = nfts?.filter((nft) =>
+    //   listings?.find((listing) => listing.asset.id === nft.metadata.id)
+    // );
+    // console.log("listings", listings);
+    // console.log("listedNfts", listedNfts);
+    // if (listedNfts) {
+    //   setListedNfts(listedNfts);
+    // }
+  }, [listings, nfts, activeListingsLoaded, nftsLoaded]);
+  const listedNfts = useMemo(() => {
+    return nfts?.filter((nft) =>
       listings?.find((listing) => listing.asset.id === nft.metadata.id)
     );
-    console.log("listings", listings);
-    console.log("listedNfts", listedNfts);
-    if (listedNfts) {
-      setListedNfts(listedNfts);
-    }
-  }, [listings, nfts, activeListingsLoaded, nftsLoaded]);
+  }, [listings, nfts]);
   const fetchCollectionData = useCallback(
     async (sanityClient = client) => {
       const query = `*[_type == "marketItems" && contractAddress == "${collectionid}" ] {
@@ -124,7 +130,21 @@ const CollectionId = () => {
   }, [collectionid]);
 
   return (
-    <div className="overflow-hidden">
+    <motion.div
+      initial={{
+        opacity: 0,
+        y: 20,
+      }}
+      animate={{
+        opacity: 1,
+        y: 0,
+      }}
+      exit={{
+        opacity: 0,
+        y: 20,
+      }}
+      className="overflow-hidden"
+    >
       <div className={style.bannerImageContainer}>
         <img
           className={style.bannerImage}
@@ -238,7 +258,7 @@ const CollectionId = () => {
           <Loader width={2} color="04111d" text={"Loading NFTs..."} />
         </div>
       )}
-    </div>
+    </motion.div>
   );
 };
 

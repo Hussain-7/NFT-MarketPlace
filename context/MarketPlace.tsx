@@ -33,13 +33,6 @@ type Props = {
 
 export const MarketPlaceProvider = ({ children }: Props) => {
   const address = useAddress();
-  // const { contract } = useContract(
-  //   "0xFE64BFAC909d23027691074E833DcB29a3233523",
-  //   "marketplace"
-  // );
-  // useEffect(() => {
-  //   console.log("contract", contract);
-  // }, [contract]);
   const [user, setUser] = useState<{
     address: string;
   }>({
@@ -56,7 +49,7 @@ export const MarketPlaceProvider = ({ children }: Props) => {
   }, [address]);
   const nftContract = useMemo(() => {
     const sdk = new ThirdwebSDK(
-      "https://eth-goerli.g.alchemy.com/v2/sJeqdSsAWetNNKmR__bWMkAXzcmh6a98"
+      "https://eth-goerli.g.alchemy.com/v2/ve0bD3a4XW9jPjVI1TSLJdpyfzqOFNoR"
       // "goerli"
     );
     return sdk!.getContract(
@@ -69,7 +62,7 @@ export const MarketPlaceProvider = ({ children }: Props) => {
 
   const marketPlaceContract = useMemo(async () => {
     const sdk = new ThirdwebSDK(
-      "https://eth-goerli.g.alchemy.com/v2/sJeqdSsAWetNNKmR__bWMkAXzcmh6a98"
+      "https://eth-goerli.g.alchemy.com/v2/ve0bD3a4XW9jPjVI1TSLJdpyfzqOFNoR"
       // "goerli"
     );
     const contract = await sdk!.getContract(
@@ -91,7 +84,7 @@ export const MarketPlaceProvider = ({ children }: Props) => {
   }, [nftContract, address]);
   const getActiveListings = useCallback(async () => {
     // if (!marketPlaceContract) return [];
-    console.log("running getActiveListings,", marketPlaceContract);
+    if (!address && !marketPlaceContract) return null;
     const result = await (await marketPlaceContract)!.getActiveListings();
     return result;
   }, [marketPlaceContract, address]);
