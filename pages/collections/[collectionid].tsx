@@ -101,7 +101,8 @@ const CollectionId = () => {
     const prices = listings?.map((listing) =>
       parseFloat(listing.buyoutCurrencyValuePerToken.displayValue)
     );
-    if (prices) return Math.min(...prices);
+    if (prices)
+      return Math.min(...prices) === Infinity ? 0 : Math.min(...prices);
     return 0;
   }, [listings]);
   const fetchCollectionData = useCallback(

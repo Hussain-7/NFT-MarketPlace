@@ -74,20 +74,21 @@ export const MarketPlaceProvider = ({ children }: Props) => {
       // "goerli"
     );
     const contract = await sdk!.getContract(
-      "0xFE64BFAC909d23027691074E833DcB29a3233523",
+      "0x97d0C2f14EcecbBDe050EC1e6c28EF44BE60B4a0",
       "marketplace"
     );
     return contract;
   }, []);
 
-  const { contract: marketPlaceContractCustom } = useContract(
-    "0xfe64bfac909d23027691074e833dcb29a3233523",
-    "marketplace"
-  );
-  const { data } = useActiveListings(marketPlaceContractCustom);
-  useEffect(() => {
-    console.log("listingsCustom", data);
-  }, [data]);
+  // const { contract: marketPlaceContractCustom } = useContract(
+  //   "0x97d0C2f14EcecbBDe050EC1e6c28EF44BE60B4a0",
+  //   "marketplace"
+  // );
+
+  // const { data } = useActiveListings(marketPlaceContractCustom);
+  // useEffect(() => {
+  //   console.log("listingsCustom", data);
+  // }, [data]);
 
   // const customListings = useActiveListings(marketPlaceContract);
   const getAllNfts = async () => {
