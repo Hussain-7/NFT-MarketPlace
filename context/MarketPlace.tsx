@@ -5,7 +5,7 @@ import {
   useSDK,
   useUser,
 } from "@thirdweb-dev/react";
-import { ThirdwebSDK } from "@thirdweb-dev/sdk";
+import { AuctionListing, DirectListing, ThirdwebSDK } from "@thirdweb-dev/sdk";
 import { SocketAddress } from "net";
 import { NextComponentType, NextPageContext } from "next";
 import {
@@ -81,23 +81,31 @@ export const MarketPlaceProvider = ({ children }: Props) => {
   }, []);
 
   const getAllNfts = async () => {
+    console.log("Running getAllNfts");
     // if (!nftContract) return [];
     return await (await nftContract)!.getAll();
     // @ts-ignore
   };
   const getUserNfts = async () => {
+    console.log("Running getUserNfts");
     // if (!nftContract) return [];
     return await (await nftContract)!.getOwned(address);
     // @ts-ignore
   };
-  const getActiveListings = async () => {
+  const getActiveListings = async (): Promise<
+    (AuctionListing | DirectListing)[]
+  > => {
+    console.log("Running getActiveListings");
     if (!address && !marketPlaceContract) return [];
     const result = await (await marketPlaceContract)!.getActiveListings();
+    if (result.length > 0) return result;
+    else return listings as (AuctionListing | DirectListing)[];
     // const result = await marketPlaceContract.getActiveListings();
-    return result;
+    // return result;
   };
 
   const getAllMarkeplaceEvents = async () => {
+    console.log("Running getAllMarkeplaceEvents");
     if (!nftContract || !address) return [];
     const newSaleEvents = await (await marketPlaceContract)!.events.getEvents(
       "NewSale"
@@ -127,9 +135,7 @@ export const MarketPlaceProvider = ({ children }: Props) => {
     error: userNftsError,
     isLoading: userNftsLoaded,
     refetch: refetchUserNfts,
-  } = useQuery("getUserNfts", getUserNfts, {
-    enabled: !!address,
-  });
+  } = useQuery("getUserNfts", getUserNfts);
   const {
     status,
     data: listings,
@@ -137,7 +143,6 @@ export const MarketPlaceProvider = ({ children }: Props) => {
     isLoading: activeListingsLoaded,
     refetch: refetchActiveListings,
   } = useQuery("getActiveListings", getActiveListings);
-
   const {
     data: events,
     error: eventsError,
@@ -183,8 +188,8 @@ export const MarketPlaceProvider = ({ children }: Props) => {
         listedNfts,
         volumeTraded,
         events,
-        nftsLoaded: status === "success",
-        activeListingsLoaded: !activeListingsLoaded,
+        nftsLoaded: !nftsLoaded,
+        activeListingsLoaded: status === "success",
         userNftsLoaded: !userNftsLoaded,
         refetchNfts,
         refetchUserNfts,
