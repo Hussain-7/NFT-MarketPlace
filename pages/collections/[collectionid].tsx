@@ -232,7 +232,7 @@ const CollectionId = () => {
                 />
                 {volumeTraded || 0}
               </div>
-              <div className={style.statName}>volume traded</div>
+              <div className={style.statName}>Volume traded</div>
             </div>
           </div>
         </div>

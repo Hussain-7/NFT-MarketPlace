@@ -88,7 +88,7 @@ export const MarketPlaceProvider = ({ children }: Props) => {
   };
   const getUserNfts = async () => {
     console.log("Running getUserNfts");
-    // if (!nftContract) return [];
+    if (!address) return [];
     return await (await nftContract)!.getOwned(address);
     // @ts-ignore
   };
@@ -96,7 +96,7 @@ export const MarketPlaceProvider = ({ children }: Props) => {
     (AuctionListing | DirectListing)[]
   > => {
     console.log("Running getActiveListings");
-    if (!address && !marketPlaceContract) return [];
+    if (!marketPlaceContract) return [];
     const result = await (await marketPlaceContract)!.getActiveListings();
     if (result.length > 0) return result;
     else return listings as (AuctionListing | DirectListing)[];
@@ -129,20 +129,26 @@ export const MarketPlaceProvider = ({ children }: Props) => {
     error: nftsLoadingError,
     isLoading: nftsLoaded,
     refetch: refetchNfts,
-  } = useQuery("getAllNfts", getAllNfts);
+  } = useQuery("getAllNfts", getAllNfts, {
+    enabled: !!nftContract,
+  });
   const {
     data: userNfts,
     error: userNftsError,
     isLoading: userNftsLoaded,
     refetch: refetchUserNfts,
-  } = useQuery("getUserNfts", getUserNfts);
+  } = useQuery("getUserNfts", getUserNfts, {
+    enabled: !!address,
+  });
   const {
     status,
     data: listings,
     error: activeListingsErrors,
     isLoading: activeListingsLoaded,
     refetch: refetchActiveListings,
-  } = useQuery("getActiveListings", getActiveListings);
+  } = useQuery("getActiveListings", getActiveListings, {
+    enabled: !!marketPlaceContract,
+  });
   const {
     data: events,
     error: eventsError,

@@ -188,7 +188,7 @@ const Profile = () => {
                 />
                 {collection?.volumeTraded}
               </div>
-              <div className={style.statName}>volume traded</div>
+              <div className={style.statName}>Volume traded</div>
             </div>
           </div>
         </div>
