@@ -240,7 +240,7 @@ const CollectionId = () => {
           <div className={style.description}>{collection?.description}</div>
         </div>
       </div>
-      {nftsLoaded && activeListingsLoaded ? (
+      {nftsLoaded && activeListingsLoaded && listedNfts!.length > 0 ? (
         <div className="my-[3rem] grid justify-center items-center grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
           {listedNfts!.length > 0 &&
             listedNfts?.map((nftItem, id) => (
