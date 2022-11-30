@@ -22,6 +22,7 @@ import Modal from "../common/Modal";
 import CustomModal from "../common/Modal";
 import { errorMsg, successMsg } from "../../lib/common";
 import { MarketPlaceContext } from "../../context/MarketPlace";
+import { useRouter } from "next/router";
 
 const style = {
   button: `mr-8 justify-center flex items-center py-2 px-12 rounded-lg cursor-pointer w-full`,
@@ -38,6 +39,8 @@ type Props = {
 };
 
 const Trade = ({ selectedNft, isOwner, isListed, marketNft }: Props) => {
+  const router = useRouter();
+
   const { refetchNfts, refetchUserNfts, refetchActiveListings } =
     useContext(MarketPlaceContext);
   const signer = useSigner();
@@ -90,8 +93,15 @@ const Trade = ({ selectedNft, isOwner, isListed, marketNft }: Props) => {
         const result = await refetchUserNfts();
         console.log("result", result);
       }
+      if (refetchActiveListings) {
+        const result = await refetchActiveListings();
+        console.log("result", result);
+      }
       successMsg();
       setLoading(false);
+      router.replace({
+        query: { ...router.query, isListed: false },
+      });
     } catch (err) {
       if (err instanceof Error && err.message.includes("is no longer valid")) {
         errorMsg("This NFT is no longer available!");
@@ -148,6 +158,9 @@ const Trade = ({ selectedNft, isOwner, isListed, marketNft }: Props) => {
       successMsg("Listing successful!");
       setLoading(false);
       setShowModal(false);
+      router.replace({
+        query: { ...router.query, isListed: true },
+      });
     } catch (err) {
       if (err instanceof Error && err.message.includes("is no longer valid")) {
         errorMsg("Listing is no longer valid");
@@ -168,7 +181,7 @@ const Trade = ({ selectedNft, isOwner, isListed, marketNft }: Props) => {
         toggleShowModal={setShowModal}
         listItem={listItem}
       />
-      {isListed === "true" && (
+      {isListed === "true" && marketNft?.buyoutCurrencyValuePerToken?.displayValue && (
         <>
           <div className="text-[#8a939b] text-lg font-normal mt-0">
             Current price:
@@ -220,6 +233,14 @@ const Trade = ({ selectedNft, isOwner, isListed, marketNft }: Props) => {
           >
             <IoMdWallet className={style.buttonIcon} />
             <div className={style.buttonText}>List Item</div>
+          </div>
+        )}
+        {isListed === "false" && !isOwner && (
+          <div className={`${style.button} bg-[#2081e2] hover:bg-[#42a0ff]`}>
+            <IoMdWallet className={style.buttonIcon} />
+            <div className={style.buttonText}>
+              <Loader text={"Verifying..."} />
+            </div>
           </div>
         )}
       </div>
